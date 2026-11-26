@@ -310,7 +310,7 @@ function initBibleExplorer(){
  L.polyline(route.map(p=>[p.lat,p.lon]),{color:"#d5a84b",weight:3,opacity:.8,dashArray:"7 8"}).addTo(explorerRouteLayer);
  document.getElementById("explorerSatellite").onclick=()=>{if(!explorerMap.hasLayer(imagery))imagery.addTo(explorerMap);};
  document.getElementById("explorerStreets").onclick=()=>{if(!explorerMap.hasLayer(imagery))imagery.addTo(explorerMap);};
- document.getElementById("explorerRotate").onclick=()=>{const el=explorerMap.getContainer();const current=Number(el.dataset.rotation||0)+15;el.dataset.rotation=String(current);el.style.transform="rotate("+current+"deg)";el.style.transformOrigin="center center";};
+ document.getElementById("explorerRotate").onclick=()=>{const p=explorerSelected;if(p){const url="https://earth.google.com/web/@"+p.lat+","+p.lon+",1500a,1000d,45y,0h,0t,0r";window.open(url,"_blank","noopener");}else{alert("Select a location first, then use Google Earth to rotate and tilt the satellite view.");}};
  document.getElementById("explorerReset").onclick=()=>{const el=explorerMap.getContainer();el.style.transform="";el.dataset.rotation="0";explorerMap.fitBounds(route.map(p=>[p.lat,p.lon]),{padding:[25,25]});};
  document.getElementById("explorerGoogleMaps").onclick=()=>{if(explorerSelected)window.open("https://www.google.com/maps/@?api=1&map_action=map&center="+explorerSelected.lat+","+explorerSelected.lon+"&zoom=15","_blank","noopener");};
  document.getElementById("explorerGoogleEarth").onclick=()=>{if(explorerSelected)window.open("https://earth.google.com/web/@"+explorerSelected.lat+","+explorerSelected.lon+",1500a,1000d,35y,0h,0t,0r","_blank","noopener");};
