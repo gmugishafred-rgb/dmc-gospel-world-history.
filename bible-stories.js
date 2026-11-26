@@ -152,7 +152,7 @@ paulData.legacy=[
 ];
 function renderPaul(kind){
  activePaulTab=kind;var rows=paulData[kind];
- paulContent.innerHTML=rows.map(function(r,i){var title=lang==="rw"?r[0]:r[1],body=lang==="rw"?r[2]:r[3],ref=r[4]||"";return '<article class="story-card" style="margin:10px 0"><h3>'+(kind==="letters"?(i+1)+". ":"")+title+'</h3><p>'+body+'</p>'+(ref?'<p class="muted"><b>'+(lang==="rw"?"Aho dusoma:":"Read:")+'</b> '+ref+'</p>':"")+'</article>'}).join("");
+ paulContent.innerHTML=rows.map(function(r,i){var title=kind==="themes"?(lang==="rw"?"Ingingo y’ingenzi ":"Key teaching ")+(i+1):(lang==="rw"?r[0]:r[1]),body=kind==="themes"?(lang==="rw"?r[0]:r[1]):(lang==="rw"?r[2]:r[3]),ref=kind==="themes"?r[2]:(r[4]||"");return '<article class="story-card" style="margin:10px 0"><h3>'+(kind==="letters"?(i+1)+". ":"")+title+'</h3><p>'+body+'</p>'+(ref?'<p class="muted"><b>'+(lang==="rw"?"Aho dusoma:":"Read:")+'</b> '+ref+'</p>':"")+'</article>'}).join("");
 }
 paulSection.querySelectorAll("[data-paul-tab]").forEach(function(btn){btn.addEventListener("click",function(){renderPaul(btn.dataset.paulTab)})});
 renderPaul("life");
