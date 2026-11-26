@@ -13,6 +13,7 @@
 <body>
 <header><h1>DMC – Gospel & World History</h1><p>Go and make disciples • Explore the story of faith and humanity</p></header>
 <main class="wrap">
+<div class="card" id="languageCard" style="margin-bottom:14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap"><b id="languageLabel">Language / Ururimi / Langue</b><select id="appLanguage" style="max-width:220px"><option value="rw">🇷🇼 Kinyarwanda</option><option value="en">🇬🇧 English</option><option value="fr">🇫🇷 Français</option></select><span class="muted" id="languageHint">Choose your preferred app language.</span></div>
 <div class="card" id="installCard" style="margin-bottom:14px"><b>Install DMC on your phone</b><p class="muted">Use this same website as an app. On supported browsers, tap Install DMC. On iPhone, use Share → Add to Home Screen.</p><button class="btn gold" id="installAppBtn" type="button" hidden>Install DMC App</button></div>
 <div class="search"><input id="search" placeholder="Search articles, places, events…"><button class="btn" id="searchBtn">Search DMC</button><button class="btn gold" id="webSearchBtn" type="button">Search Internet</button></div>
 <nav class="toolbar" aria-label="Main navigation">
@@ -251,6 +252,34 @@ window.addEventListener("beforeinstallprompt",event=>{event.preventDefault();dmc
 installButton.addEventListener("click",async()=>{if(!dmcInstallPrompt){alert("If Install is not available, open Chrome menu (⋮) and choose Install app or Add to Home screen.");return;}dmcInstallPrompt.prompt();await dmcInstallPrompt.userChoice;dmcInstallPrompt=null;installButton.hidden=true;});
 window.addEventListener("appinstalled",()=>{installButton.hidden=true;});
 if(window.matchMedia("(display-mode: standalone)").matches)installButton.hidden=true;
+
+// DMC multilingual interface: Kinyarwanda, English and French
+(function(){
+const translations={
+rw:{"Language / Ururimi / Langue":"Ururimi","Choose your preferred app language.":"Hitamo ururimi wifuza gukoresha.","Home":"Ahabanza","Quiz":"Ibibazo","Rhythms":"Indirimbo","Holy Bible":"Bibiliya","My Books":"Ibitabo byanjye","Yesu Kristo":"Yesu Kristo","Gospel":"Ubutumwa Bwiza","History":"Amateka","Timeline":"Ibihe by'amateka","Maps":"Amakarita","Seven Wonders":"Ibintu 7 bitangaje","Library":"Isomero","Updates":"Amakuru mashya","Admin":"Umuyobozi","Search DMC":"Shakisha muri DMC","Search Internet":"Shakisha kuri Internet","Install DMC on your phone":"Shyira DMC muri telefoni","Install DMC App":"Install DMC App","Welcome":"Murakaza neza","Discover the Bible and the history of the world":"Menya Bibiliya n'amateka y'isi","Explore the collection":"Reba ibice bikubiye muri app","Explore Gospel":"Menya Ubutumwa Bwiza","Bible Quiz — Genesis to Revelation":"Ibibazo bya Bibiliya — Itangiriro kugeza Ibyahishuwe","Test your knowledge across all 66 books of the Bible.":"Gerageza ubumenyi bwawe ku bitabo 66 bya Bibiliya.","Choose your challenge":"Hitamo ibibazo","Start quiz":"Tangira ibibazo","Next question":"Ikibazo gikurikira","Play again":"Ongera ukine","Your result":"Ibyo wagezeho","Round complete":"Ibibazo birangiye","World History":"Amateka y'isi","Historical Timeline":"Urutonde rw'ibihe by'amateka","Bible & World History Maps":"Amakarita ya Bibiliya n'amateka y'isi","Library":"Isomero","Updates & Sharing":"Amakuru no gusangiza abandi","Share this app":"Sangiza abandi app","Copy app link":"Koporora link ya app","Admin – Add Content":"Umuyobozi – Ongeramo ibikubiyemo","Save article":"Bika inyandiko","Read in DMC":"Soma muri DMC","Search hymns / indirimbo":"Shakisha indirimbo","Search title, number, topic or lyrics":"Shakisha umutwe, nimero, insanganyamatsiko cyangwa amagambo","Singing guide":"Uko indirimbo iririmbwa","Piano chords":"Amajwi ya piano","Play melody":"Tangira gucuranga","Stop":"Hagarika","Congregation":"Abateraniye hamwe","Solo":"Umuntu umwe","Add a hymn":"Ongeramo indirimbo","Save hymn":"Bika indirimbo","Bible book":"Igitabo cya Bibiliya","Difficulty":"Urwego","All books — Genesis to Revelation":"Ibitabo byose — Itangiriro kugeza Ibyahishuwe","Old Testament (39)":"Isezerano rya Kera (39)","New Testament (27)":"Isezerano Rishya (27)","All 66":"66 byose","Read Bible":"Soma Bibiliya","Sin":"Icyaha","Love":"Urukundo","The Calling of God":"Umuhamagaro w'Imana"},
+fr:{"Language / Ururimi / Langue":"Langue","Choose your preferred app language.":"Choisissez la langue de l’application.","Home":"Accueil","Quiz":"Quiz biblique","Rhythms":"Chants","Holy Bible":"Bible","My Books":"Mes livres","Yesu Kristo":"Jésus-Christ","Gospel":"Évangile","History":"Histoire","Timeline":"Chronologie","Maps":"Cartes","Seven Wonders":"Sept merveilles","Library":"Bibliothèque","Updates":"Actualités","Admin":"Administration","Search DMC":"Rechercher dans DMC","Search Internet":"Rechercher sur Internet","Install DMC on your phone":"Installer DMC sur votre téléphone","Install DMC App":"Installer DMC","Welcome":"Bienvenue","Discover the Bible and the history of the world":"Découvrez la Bible et l’histoire du monde","Explore the collection":"Explorer la collection","Explore Gospel":"Explorer l’Évangile","Bible Quiz — Genesis to Revelation":"Quiz biblique — de la Genèse à l’Apocalypse","Test your knowledge across all 66 books of the Bible.":"Testez vos connaissances sur les 66 livres de la Bible.","Choose your challenge":"Choisissez votre défi","Start quiz":"Commencer le quiz","Next question":"Question suivante","Play again":"Rejouer","Your result":"Votre résultat","Round complete":"Quiz terminé","World History":"Histoire du monde","Historical Timeline":"Chronologie historique","Bible & World History Maps":"Cartes bibliques et historiques","Library":"Bibliothèque","Updates & Sharing":"Actualités et partage","Share this app":"Partager cette application","Copy app link":"Copier le lien","Admin – Add Content":"Administration – Ajouter du contenu","Save article":"Enregistrer l’article","Read in DMC":"Lire dans DMC","Search hymns / indirimbo":"Rechercher des chants","Search title, number, topic or lyrics":"Rechercher par titre, numéro, thème ou paroles","Singing guide":"Guide de chant","Piano chords":"Accords de piano","Play melody":"Jouer la mélodie","Stop":"Arrêter","Congregation":"Assemblée","Solo":"Solo","Add a hymn":"Ajouter un chant","Save hymn":"Enregistrer le chant","Bible book":"Livre biblique","Difficulty":"Difficulté","All books — Genesis to Revelation":"Tous les livres — Genèse à Apocalypse","Old Testament (39)":"Ancien Testament (39)","New Testament (27)":"Nouveau Testament (27)","All 66":"Les 66 livres","Read Bible":"Lire la Bible","Sin":"Le péché","Love":"Amour","The Calling of God":"L’appel de Dieu"}
+};
+const selector=document.getElementById('appLanguage');
+function apply(lang){
+document.documentElement.lang=lang;
+document.querySelectorAll('body *').forEach(el=>{
+if(el.children.length===0&&el.textContent.trim()){
+if(!el.dataset.langOriginal)el.dataset.langOriginal=el.textContent;
+const base=el.dataset.langOriginal.trim(),translated=translations[lang]?.[base];
+if(translated)el.textContent=el.dataset.langOriginal.replace(base,translated);
+}
+['placeholder','title','aria-label'].forEach(attr=>{
+if(el.hasAttribute(attr)){const key='langOrig'+attr;if(!el.dataset[key])el.dataset[key]=el.getAttribute(attr);const base=el.dataset[key];if(translations[lang]?.[base])el.setAttribute(attr,translations[lang][base]);}
+});
+});
+localStorage.setItem('dmcAppLanguage',lang);
+}
+selector.addEventListener('change',()=>apply(selector.value));
+const saved=localStorage.getItem('dmcAppLanguage')||'rw';selector.value=saved;apply(saved);
+const observer=new MutationObserver(()=>{const lang=selector.value;if(lang!=='en')apply(lang)});
+observer.observe(document.querySelector('main'),{childList:true,subtree:true});
+})();
+
 render();
 if("serviceWorker"in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
 </script><script src="./bible-stories.js?v=17"></script><script src="./quiz.js?v=17" onerror="document.getElementById('quizTotalQuestions').textContent='Quiz questions could not load. Please refresh the app.'"></script><script src="./rhythms.js?v=17" onerror="document.getElementById('rhythmStatus').textContent='Rhythm player could not load. Please refresh the app.'"></script><script src="./hymnal-library.js?v=1"></script></body></html>
