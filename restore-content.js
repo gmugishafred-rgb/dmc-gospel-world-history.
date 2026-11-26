@@ -147,7 +147,7 @@
     });
   }
 
-  function restore() { renderBooks(); renderGospel(); renderWonders(); }
+  function restore() { renderBooks(); renderGospel(); renderWonders(); installShareAppTab(); }
   window.DMCrestoreMissingSections = restore;
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", restore, { once: true });
   else restore();
