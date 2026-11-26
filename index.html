@@ -298,7 +298,8 @@ function initBibleExplorer(){
  if(!window.L||explorerMap)return;
  explorerMap=L.map("bibleExplorerMap",{zoomControl:true,scrollWheelZoom:true}).setView([31.5,36],4);
  const imagery=L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",{maxZoom:19,attribution:"Satellite imagery © Esri, Maxar, Earthstar Geographics"});
- imagery.addTo(explorerMap);
+ const englishLabels=L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places_Alternate/MapServer/tile/{z}/{y}/{x}",{maxZoom:19,opacity:1,attribution:"English place names © Esri"});
+ imagery.addTo(explorerMap);englishLabels.addTo(explorerMap);
  explorerMarkerLayer=L.layerGroup().addTo(explorerMap);
  explorerRouteLayer=L.layerGroup().addTo(explorerMap);
  bibleHistoryPlaces.forEach((p,i)=>{
@@ -337,5 +338,5 @@ if(window.matchMedia("(display-mode: standalone)").matches)installButton.hidden=
 
 render();
 if("serviceWorker"in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
-</script><script src="https://unpkg.com/leaflet-rotate@0.2.8/dist/leaflet-rotate.js"></script><script src="./bible-satellite-explorer.js?v=2"></script><script src="./dmc-translate.js?v=2"></script><script src="./bible-stories.js?v=17"></script><script src="./quiz.js?v=17" onerror="document.getElementById('quizTotalQuestions').textContent='Quiz questions could not load. Please refresh the app.'"></script><script src="./rhythms.js?v=17" onerror="document.getElementById('rhythmStatus').textContent='Rhythm player could not load. Please refresh the app.'"></script><script src="./hymnal-library.js?v=3"></script><script src="./restore-content.js?v=23" defer></script>
+</script><script src="https://unpkg.com/leaflet-rotate@0.2.8/dist/leaflet-rotate.js"></script><script src="./dmc-translate.js?v=2"></script><script src="./bible-stories.js?v=17"></script><script src="./quiz.js?v=17" onerror="document.getElementById('quizTotalQuestions').textContent='Quiz questions could not load. Please refresh the app.'"></script><script src="./rhythms.js?v=17" onerror="document.getElementById('rhythmStatus').textContent='Rhythm player could not load. Please refresh the app.'"></script><script src="./hymnal-library.js?v=3"></script><script src="./restore-content.js?v=23" defer></script>
 </body></html>
