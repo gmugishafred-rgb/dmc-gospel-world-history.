@@ -1,4 +1,4 @@
-const CACHE = "dmc-gospel-history-v3";
+const CACHE = "dmc-gospel-history-v4";
 const CORE = ["./", "./index.html", "./manifest.json", "./bible-stories.js"];
 self.addEventListener("install", event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(CORE)));
