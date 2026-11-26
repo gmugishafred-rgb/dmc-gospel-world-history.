@@ -1,11 +1,24 @@
 {
   "name": "DMC – Gospel & World History",
-  "short_name": "DMC History",
-  "description": "Explore the Bible, world history, timelines, maps and ancient wonders.",
+  "short_name": "DMC",
+  "description": "Explore the Bible, world history, timelines, maps and ancient wonders. Go and make disciples.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
+  "orientation": "any",
   "background_color": "#f6f4ed",
   "theme_color": "#123b32",
-  "icons": []
+  "icons": [
+    {
+      "src": "./icons/dmc-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "categories": [
+    "education",
+    "books",
+    "lifestyle"
+  ]
 }
