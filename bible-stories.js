@@ -49,7 +49,7 @@ var johnChapters=[
 var johnBox=document.createElement("section");
 johnBox.className="card";
 johnBox.style.marginTop="22px";
-johnBox.innerHTML='<h2>📖 Igitabo cya Yohana — Ibyigisho by\\'ibice 21</h2><p class="muted">Soma incamake ya buri gice, uhitemo ururimi, hanyuma ukurikize umurongo wo muri Bibiliya. / Explore all 21 chapters of the Gospel of John.</p><div id="johnChapterGrid" class="story-layout"></div><div id="johnChapterDetail" class="story-detail"></div>';
+johnBox.innerHTML='<h2>📖 Igitabo cya Yohana — Ibyigisho by\'ibice 21</h2><p class="muted">Soma incamake ya buri gice, uhitemo ururimi, hanyuma ukurikize umurongo wo muri Bibiliya. / Explore all 21 chapters of the Gospel of John.</p><div id="johnChapterGrid" class="story-layout"></div><div id="johnChapterDetail" class="story-detail"></div>';
 sec.appendChild(johnBox);
 var jgrid=johnBox.querySelector("#johnChapterGrid"),jdetail=johnBox.querySelector("#johnChapterDetail");
 function renderJohn(){
