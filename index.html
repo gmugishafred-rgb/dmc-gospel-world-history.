@@ -176,4 +176,4 @@ let dmcMap;function initMap(){if(!window.L)return;dmcMap=L.map("map").setView([3
 function focusPlace(lat,lon){showTab("maps");if(!dmcMap)initMap();if(dmcMap){dmcMap.setView([lat,lon],7);setTimeout(()=>dmcMap.invalidateSize(),200)}}
 render();
 if("serviceWorker"in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
-</script></body></html>
+</script><script src="./bible-stories.js"></script></body></html>
