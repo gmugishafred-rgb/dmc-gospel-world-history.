@@ -365,4 +365,31 @@ if(window.matchMedia("(display-mode: standalone)").matches)installButton.hidden=
 render();
 if("serviceWorker"in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
 </script><script src="https://unpkg.com/leaflet-rotate@0.2.8/dist/leaflet-rotate.js"></script><script src="./dmc-translate.js?v=2"></script><script src="./bible-stories.js?v=17"></script><script src="./quiz.js?v=18" onerror="document.getElementById('quizTotalQuestions').textContent='Quiz questions could not load. Please refresh the app.'"></script><script src="./rhythms.js?v=17" onerror="document.getElementById('rhythmStatus').textContent='Rhythm player could not load. Please refresh the app.'"></script><script src="./hymnal-library.js?v=3"></script><script src="./restore-content.js?v=24" defer></script><script src="./dmc-search.js?v=1" defer></script>
+
+<script>
+/* DMC navigation safety net: keep every tab clickable even if an optional app module fails. */
+(function () {
+  "use strict";
+  document.addEventListener("click", function (event) {
+    const tab = event.target.closest && event.target.closest("[data-tab]");
+    if (!tab) return;
+    const id = tab.getAttribute("data-tab");
+    const section = document.getElementById(id);
+    if (!section || !section.classList.contains("section")) return;
+    document.querySelectorAll(".section").forEach(function (item) {
+      item.classList.toggle("active", item.id === id);
+    });
+    document.querySelectorAll("[data-tab]").forEach(function (item) {
+      item.classList.toggle("active", item === tab);
+    });
+    if (id === "maps" && window.dmcMap && window.dmcMap.invalidateSize) {
+      setTimeout(function () { window.dmcMap.invalidateSize(); }, 120);
+    }
+    if (id === "bible-explorer" && window.dmcBibleExplorerMap && window.dmcBibleExplorerMap.invalidateSize) {
+      setTimeout(function () { window.dmcBibleExplorerMap.invalidateSize(); }, 120);
+    }
+  }, true);
+})();
+</script>
+
 </body></html>
