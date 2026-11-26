@@ -25,7 +25,7 @@
 <section id="gospel" class="section"><h2>Gospel & Biblical History</h2><p class="muted">Introductory study notes with Scripture references. Check the biblical text and reliable historical sources for deeper study.</p><div id="gospelCards" class="grid"></div></section>
 <section id="history" class="section"><h2>World History</h2><p class="muted">A brief introduction to civilizations and historical periods.</p><div id="historyCards" class="grid"></div></section>
 <section id="timeline" class="section"><h2>Historical Timeline</h2><div id="timelineList" class="timeline"></div><p class="muted">Dates before the common era are approximate; ancient chronologies may differ between scholars.</p></section>
-<section id="maps" class="section"><h2>Historical Places Map</h2><p>Choose a marker to explore a place connected with biblical and ancient history.</p><div id="map"></div><div id="mapInfo" class="card" style="margin-top:12px">Select a map marker to read about the place.</div></section>
+<section id="maps" class="section"><h2>Bible & World History Maps</h2><p>Explore biblical locations, places connected with Jesus and the apostles, Paul’s missionary routes, and the Seven Wonders of the Ancient World. Tap a marker to read about each place.</p><div id="map"></div><div id="mapInfo" class="card" style="margin-top:12px">Select a map marker to read about the place.</div></section>
 <section id="wonders" class="section"><h2>Seven Wonders of the Ancient World</h2><div id="wonderCards" class="grid"></div></section>
 <section id="library" class="section"><h2>Library</h2><p>Study notes and references. Add your own material from the Admin section; it is saved in this browser on this device.</p><div id="libraryCards" class="grid"></div></section>
 <section id="updates" class="section"><h2>Updates & Sharing</h2><div class="card"><h3>Share DMC</h3><p>Invite others to learn and explore.</p><button class="btn" id="shareBtn">Share this app</button> <button class="btn gold" id="copyBtn">Copy app link</button></div><div id="updateList" class="grid" style="margin-top:14px"></div></section>
@@ -138,22 +138,39 @@ const wonders=[
 ["Lighthouse of Alexandria","Alexandria, Egypt","A famous lighthouse on Pharos island that guided ships into Alexandria's harbor.",31.2135,29.8853]
 ];
 const places=[
-["Jerusalem","Important city in the biblical narratives and the history of Judaism and Christianity.",31.7683,35.2137],
-["Bethlehem","Traditionally identified as the birthplace of Jesus.",31.7054,35.2024],
-["Cairo / Ancient Memphis region","Modern Cairo lies near many major sites of ancient Egyptian history.",29.8719,31.2165],
-["Babylon","Ancient Mesopotamian city associated with the Babylonian Empire and the Judean exile.",32.5364,44.4200],
-["Ur","Ancient city in southern Mesopotamia, traditionally associated with Abraham's early life.",30.9626,46.1031],
-["Haran","Ancient settlement in northern Mesopotamia associated with the family of Abraham.",36.8667,39.0333],
-["Nineveh","Capital of the Assyrian Empire and the setting for the prophetic mission in Jonah.",36.3594,43.1528],
-["Samaria","Capital of the northern kingdom of Israel before its conquest by Assyria.",32.2767,35.1900],
-["Antioch","Major early Christian center from which missionaries were sent, according to Acts.",36.2021,36.1600],
-["Corinth","Important Greek city and setting for Paul's ministry and letters.",37.9386,22.9322],
-["Tarsus","Paul's birthplace in Cilicia, according to Acts 22:3.",36.9167,34.8950],
-["Alexandria","Major Hellenistic and Roman city in Egypt, known for scholarship and its ancient library.",31.2001,29.9187],
-["Rome","Capital of the Roman Empire and an important center in early Christian history.",41.9028,12.4964],
-["Ephesus","Ancient city in Asia Minor mentioned in Acts and Revelation.",37.9497,27.3639],
-["Athens","Major center of ancient Greek philosophy and culture; visited by Paul according to Acts 17.",37.9838,23.7275],
-["Mount Sinai (traditional site)","A traditional location associated with Moses and the giving of the Law; the precise biblical location is debated.",28.5395,33.9750]
+ ["Jerusalem","Central city in biblical history, the Temple, and the final week of Jesus.",31.7683,35.2137],
+ ["Bethlehem","Traditionally identified as the birthplace of Jesus.",31.7054,35.2024],
+ ["Cairo / Ancient Memphis region","Region near major sites of ancient Egyptian history.",29.8719,31.2165],
+ ["Babylon","Mesopotamian capital associated with the Babylonian Empire and Judah’s exile.",32.5364,44.4200],
+ ["Ur","Ancient city traditionally associated with Abraham’s early life.",30.9626,46.1031],
+ ["Haran","Ancient settlement associated with Abraham’s family.",36.8667,39.0333],
+ ["Nineveh","Assyrian capital and setting for Jonah’s prophetic mission.",36.3594,43.1528],
+ ["Samaria","Capital of the northern kingdom of Israel.",32.2767,35.1900],
+ ["Antioch","Major early Christian center and sending church for Paul and Barnabas.",36.2021,36.1600],
+ ["Corinth","Greek city where Paul ministered and wrote to the church.",37.9386,22.9322],
+ ["Tarsus","Paul’s birthplace in Cilicia.",36.9167,34.8950],
+ ["Alexandria","Major Hellenistic and Roman city in Egypt, known for scholarship.",31.2001,29.9187],
+ ["Rome","Capital of the Roman Empire and destination of Paul’s final recorded journey.",41.9028,12.4964],
+ ["Ephesus","Ancient city in Asia Minor where Paul taught and addressed by Revelation.",37.9497,27.3639],
+ ["Athens","Greek philosophical center visited by Paul in Acts 17.",37.9838,23.7275],
+ ["Mount Sinai (traditional site)","Traditional location associated with Moses; exact location is debated.",28.5395,33.9750],
+ ["Jericho","Ancient city associated with Israel’s entry into the land.",31.8713,35.4444],
+ ["Hebron","Ancient city associated with Abraham and the patriarchs.",31.5326,35.0998],
+ ["Beersheba","Southern biblical city associated with the patriarchs.",31.2520,34.7915],
+ ["Mount Carmel","Mountain associated with Elijah’s confrontation with the prophets of Baal.",32.7343,34.9896],
+ ["Sea of Galilee","Lake central to Jesus’ ministry and the calling of disciples.",32.8190,35.5900],
+ ["Nazareth","Town where Jesus grew up.",32.6996,35.3035],
+ ["Capernaum","Galilean town associated with Jesus’ teaching and healing ministry.",32.8803,35.5733],
+ ["Bethany","Village near Jerusalem associated with Mary, Martha and Lazarus.",31.7717,35.2610],
+ ["Jordan River","River associated with Israel’s crossing and the baptism of Jesus.",31.8360,35.5500],
+ ["Caesarea Maritima","Roman port city where Paul was held before appealing to Caesar.",32.5000,34.8920],
+ ["Philippi","Macedonian city visited by Paul; site of the imprisonment in Acts 16.",41.0136,24.2865],
+ ["Thessalonica","Macedonian city where Paul preached and to whose church he wrote.",40.6401,22.9444],
+ ["Berea","Macedonian city whose people examined the Scriptures after hearing Paul.",40.5167,22.2000],
+ ["Troas","Aegean port city associated with Paul’s journeys.",39.7570,26.1620],
+ ["Miletus","Port where Paul met the elders of Ephesus.",37.5300,27.2800],
+ ["Malta","Island where Paul was shipwrecked on the voyage to Rome.",35.9375,14.3754],
+ ["Patmos","Island associated with John’s exile and the Revelation.",37.3089,26.5475]
 ];
 let custom=JSON.parse(localStorage.getItem("dmcArticles")||"[]");
 function all(){return [...base,...custom]}
