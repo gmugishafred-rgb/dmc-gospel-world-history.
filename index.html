@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#123b32"><meta name="description" content="DMC Gospel & World History — explore the Bible, world history, timelines, maps and ancient wonders.">
+<link rel="manifest" href="./manifest.json"><title>DMC – Gospel & World History</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+:root{--green:#123b32;--gold:#d5a84b;--paper:#f6f4ed;--ink:#202820}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.55 system-ui,Arial}header{background:var(--green);color:white;padding:22px max(18px,calc((100% - 1100px)/2));border-bottom:4px solid var(--gold)}header h1{margin:0;font-size:clamp(23px,4vw,34px)}header p{margin:4px 0 0;color:#e8dfc8}.wrap{max-width:1100px;margin:auto;padding:18px}.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.toolbar button,.btn{border:0;border-radius:9px;padding:10px 14px;background:var(--green);color:white;font-weight:650;cursor:pointer}.toolbar button.active,.btn.gold{background:var(--gold);color:#201a0c}input,select,textarea{width:100%;padding:11px;border:1px solid #c9c7bc;border-radius:8px;font:inherit;background:white}textarea{min-height:120px}.search{display:flex;gap:8px}.search input{flex:1}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(245px,1fr));gap:14px}.card{background:white;border:1px solid #e2dfd4;border-radius:13px;padding:16px;box-shadow:0 2px 8px #1b2b1b0a}.card h3{margin:0 0 6px;color:var(--green)}.muted{color:#656b61;font-size:.92rem}.tag{display:inline-block;background:#f1e8d2;color:#624916;padding:2px 8px;border-radius:20px;font-size:.78rem}.section{display:none}.section.active{display:block}#map{height:390px;border-radius:12px;z-index:1}.timeline{border-left:3px solid var(--gold);padding-left:18px;margin:14px 0}.timeline article{margin:0 0 18px}.admin{max-width:720px}footer{text-align:center;padding:25px;color:#697068}a{color:#145d4b}button:focus,input:focus,textarea:focus{outline:2px solid var(--gold);outline-offset:2px}.hidden{display:none!important}
+</style>
+</head>
+<body>
+<header><h1>DMC – Gospel & World History</h1><p>Go and make disciples • Explore the story of faith and humanity</p></header>
+<main class="wrap">
+<div class="search"><input id="search" placeholder="Search articles, places, events…"><button class="btn" id="searchBtn">Search</button></div>
+<nav class="toolbar" aria-label="Main navigation">
+<button class="active" data-tab="home">Home</button><button data-tab="gospel">Gospel</button><button data-tab="history">History</button><button data-tab="timeline">Timeline</button><button data-tab="maps">Maps</button><button data-tab="wonders">Seven Wonders</button><button data-tab="library">Library</button><button data-tab="updates">Updates</button><button data-tab="admin">Admin</button>
+</nav>
+<section id="home" class="section active">
+<div class="card"><span class="tag">Welcome</span><h2>Discover the Bible and the history of the world</h2><p>This learning resource connects biblical events, ancient civilizations, historical places and the wider story of humanity. Read, explore maps, search for more information online, and share what you learn.</p><p><b>“Go therefore and make disciples of all nations…”</b> — Matthew 28:19</p><button class="btn gold" onclick="showTab('gospel')">Explore Gospel</button></div>
+<h2>Explore the collection</h2><div id="homeCards" class="grid"></div>
+</section>
+<section id="gospel" class="section"><h2>Gospel & Biblical History</h2><p class="muted">Introductory study notes with Scripture references. Check the biblical text and reliable historical sources for deeper study.</p><div id="gospelCards" class="grid"></div></section>
+<section id="history" class="section"><h2>World History</h2><p class="muted">A brief introduction to civilizations and historical periods.</p><div id="historyCards" class="grid"></div></section>
+<section id="timeline" class="section"><h2>Historical Timeline</h2><div id="timelineList" class="timeline"></div><p class="muted">Dates before the common era are approximate; ancient chronologies may differ between scholars.</p></section>
+<section id="maps" class="section"><h2>Historical Places Map</h2><p>Choose a marker to explore a place connected with biblical and ancient history.</p><div id="map"></div><div id="mapInfo" class="card" style="margin-top:12px">Select a map marker to read about the place.</div></section>
+<section id="wonders" class="section"><h2>Seven Wonders of the Ancient World</h2><div id="wonderCards" class="grid"></div></section>
+<section id="library" class="section"><h2>Library</h2><p>Study notes and references. Add your own material from the Admin section; it is saved in this browser on this device.</p><div id="libraryCards" class="grid"></div></section>
+<section id="updates" class="section"><h2>Updates & Sharing</h2><div class="card"><h3>Share DMC</h3><p>Invite others to learn and explore.</p><button class="btn" id="shareBtn">Share this app</button> <button class="btn gold" id="copyBtn">Copy app link</button></div><div id="updateList" class="grid" style="margin-top:14px"></div></section>
+<section id="admin" class="section"><div class="card admin"><h2>Admin – Add Content</h2><p class="muted">This first version stores entries locally in this browser. They are not yet synchronized to other users or devices. Keep a backup of important content.</p><form id="articleForm"><label>Article title</label><input id="title" required maxlength="120" placeholder="Enter title"><br><br><label>Category</label><select id="category"><option>Gospel</option><option>World History</option><option>Timeline</option><option>Maps</option><option>Library</option><option>Updates</option></select><br><br><label>Scripture / historical references</label><input id="refs" placeholder="e.g. Genesis 12; Britannica"><br><br><label>Article text</label><textarea id="body" required placeholder="Write your study notes here…"></textarea><br><br><button class="btn" type="submit">Save article</button></form><p id="adminStatus" role="status"></p></div><h3>Your added articles</h3><div id="adminArticles" class="grid"></div></section>
+</main>
+<footer>DMC – Gospel & World History • Disciple Making Community • “Go and make disciples”</footer>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const base=[
+{title:"Creation and the beginning",category:"Gospel",refs:"Genesis 1–2",body:"Genesis opens the biblical story with God as Creator of heaven and earth. These chapters introduce humanity, the created world and the human vocation before God."},
+{title:"Abraham and the covenant",category:"Gospel",refs:"Genesis 12; 15; 17",body:"God calls Abram to leave his homeland and promises to make him a blessing to the families of the earth. The covenant becomes central to the biblical story."},
+{title:"The Exodus",category:"Gospel",refs:"Exodus 1–15",body:"The book of Exodus tells how the Israelites were delivered from slavery in Egypt. Moses leads the people, and the Passover becomes a defining memory of deliverance."},
+{title:"Jerusalem in biblical history",category:"Gospel",refs:"2 Samuel 5–6; 1 Kings 6; Luke 2; Acts 2",body:"Jerusalem became the city of David, the location of the Temple, and an important setting in the ministry, death and resurrection of Jesus and the beginnings of the church."},
+{title:"The life and teaching of Jesus",category:"Gospel",refs:"Matthew–John",body:"The four Gospels present Jesus’ ministry, teaching, death and resurrection. Central themes include the Kingdom of God, repentance, faith, love and discipleship."},
+{title:"The early church",category:"Gospel",refs:"Acts 1–2; Acts 9; Acts 13–28",body:"Acts describes the spread of the Christian message from Jerusalem into the wider Roman world through the witness of the apostles and early believers."},
+{title:"Ancient Egypt",category:"World History",refs:"Nile Valley; c. 3100 BCE onward",body:"Ancient Egyptian civilization developed along the Nile. Its history includes pharaonic kingdoms, monumental architecture, writing systems and extensive trade."},
+{title:"Mesopotamia",category:"World History",refs:"Tigris and Euphrates; Sumer, Akkad, Babylon",body:"Mesopotamia, often called a cradle of urban civilization, saw early cities, writing, law codes and complex states develop between the Tigris and Euphrates rivers."},
+{title:"Ancient Greece",category:"World History",refs:"Aegean region; first millennium BCE",body:"Greek communities developed influential traditions in philosophy, drama, politics, mathematics, art and historical writing. Alexander's conquests spread Hellenistic culture."},
+{title:"The Roman Empire",category:"World History",refs:"27 BCE–476 CE (western empire)",body:"Rome grew from a city-state into a Mediterranean empire. Roman roads, cities, law and administration shaped the world in which early Christianity spread."}
+];
+const timeline=[
+["c. 3100 BCE","Early dynastic Egypt and the emergence of unified kingship"],
+["c. 3000–2000 BCE","Growth of city-states in ancient Mesopotamia"],
+["c. 2000 BCE","Approximate period often associated with the patriarchal narratives; dates are debated"],
+["c. 1250–1200 BCE","Possible time frame proposed by some scholars for an Exodus setting; no scholarly consensus"],
+["c. 1000 BCE","Traditional approximate date for David's reign"],
+["6th century BCE","Babylonian conquest of Jerusalem and exile of many Judeans"],
+["c. 5 BCE–30 CE","Approximate scholarly range often proposed for the life of Jesus"],
+["1st century CE","Christian communities spread through the Roman world"],
+["476 CE","Conventional date for the end of the Western Roman Empire"]
+];
+const wonders=[
+["Great Pyramid of Giza","Giza, Egypt","The only surviving ancient wonder. Built as a royal tomb for Pharaoh Khufu during the Old Kingdom." ,29.9792,31.1342],
+["Hanging Gardens of Babylon","Babylon, Iraq","Described by ancient writers; their existence and exact location remain debated.",32.5364,44.4200],
+["Statue of Zeus at Olympia","Olympia, Greece","A monumental statue by Phidias, housed in the Temple of Zeus.",37.6386,21.6300],
+["Temple of Artemis","Ephesus, Türkiye","A celebrated sanctuary dedicated to Artemis, rebuilt several times.",37.9497,27.3639],
+["Mausoleum at Halicarnassus","Bodrum, Türkiye","A monumental tomb built for Mausolus; the word mausoleum comes from his name.",37.0379,27.4241],
+["Colossus of Rhodes","Rhodes, Greece","A giant bronze statue of Helios, remembered in ancient accounts.",36.4510,28.2270],
+["Lighthouse of Alexandria","Alexandria, Egypt","A famous lighthouse on Pharos island that guided ships into Alexandria's harbor.",31.2135,29.8853]
+];
+const places=[
+["Jerusalem","Important city in the biblical narratives and the history of Judaism and Christianity.",31.7683,35.2137],
+["Bethlehem","Traditionally identified as the birthplace of Jesus.",31.7054,35.2024],
+["Cairo / Ancient Memphis region","Modern Cairo lies near many major sites of ancient Egyptian history.",29.8719,31.2165],
+["Babylon","Ancient Mesopotamian city associated with the Babylonian Empire and the Judean exile.",32.5364,44.4200],
+["Rome","Capital of the Roman Empire and an important center in early Christian history.",41.9028,12.4964],
+["Ephesus","Ancient city in Asia Minor mentioned in Acts and Revelation.",37.9497,27.3639],
+["Athens","Major center of ancient Greek philosophy and culture; visited by Paul according to Acts 17.",37.9838,23.7275],
+["Mount Sinai (traditional site)","A traditional location associated with Moses and the giving of the Law; the precise biblical location is debated.",28.5395,33.9750]
+];
+let custom=JSON.parse(localStorage.getItem("dmcArticles")||"[]");
+function all(){return [...base,...custom]}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function card(a){return '<article class="card"><span class="tag">'+esc(a.category)+'</span><h3>'+esc(a.title)+'</h3><p>'+esc(a.body)+'</p><p class="muted"><b>References:</b> '+esc(a.refs||"Not supplied")+'</p></article>'}
+function render(){const data=all();document.getElementById("homeCards").innerHTML=data.slice(0,4).map(card).join("");document.getElementById("gospelCards").innerHTML=data.filter(a=>a.category==="Gospel").map(card).join("")||"No articles yet.";document.getElementById("historyCards").innerHTML=data.filter(a=>a.category==="World History").map(card).join("")||"No articles yet.";document.getElementById("libraryCards").innerHTML=data.map(card).join("");document.getElementById("timelineList").innerHTML=timeline.map(t=>'<article><b>'+esc(t[0])+'</b><div>'+esc(t[1])+'</div></article>').join("")+custom.filter(a=>a.category==="Timeline").map(a=>'<article><b>'+esc(a.title)+'</b><div>'+esc(a.body)+'</div></article>').join("");document.getElementById("wonderCards").innerHTML=wonders.map(w=>'<article class="card"><span class="tag">Ancient Wonder</span><h3>'+esc(w[0])+'</h3><p class="muted">'+esc(w[1])+'</p><p>'+esc(w[2])+'</p><button class="btn" onclick="focusPlace('+w[3]+','+w[4]+')">Show on map</button></article>').join("");document.getElementById("updateList").innerHTML=custom.filter(a=>a.category==="Updates").map(card).join("")||'<div class="card"><h3>Welcome</h3><p>The DMC learning collection is ready to grow. New articles can be added by the administrator.</p></div>';document.getElementById("adminArticles").innerHTML=custom.map((a,i)=>'<div class="card"><b>'+esc(a.title)+'</b><p class="muted">'+esc(a.category)+'</p><button class="btn" onclick="removeArticle('+i+')">Delete</button></div>').join("")}
+function showTab(id){document.querySelectorAll(".section").forEach(s=>s.classList.toggle("active",s.id===id));document.querySelectorAll("[data-tab]").forEach(b=>b.classList.toggle("active",b.dataset.tab===id));if(id==="maps"&&!window.dmcMap)initMap();window.scrollTo({top:0,behavior:"smooth"})}
+document.querySelectorAll("[data-tab]").forEach(b=>b.addEventListener("click",()=>showTab(b.dataset.tab)));
+document.getElementById("articleForm").addEventListener("submit",e=>{e.preventDefault();custom.push({title:title.value.trim(),category:category.value,refs:refs.value.trim(),body:body.value.trim()});localStorage.setItem("dmcArticles",JSON.stringify(custom));e.target.reset();adminStatus.textContent="Saved on this device.";render()});
+function removeArticle(i){if(confirm("Delete this article from this device?")){custom.splice(i,1);localStorage.setItem("dmcArticles",JSON.stringify(custom));render()}}
+document.getElementById("searchBtn").onclick=()=>{const q=search.value.trim().toLowerCase();if(!q)return;const found=all().filter(a=>(a.title+" "+a.body+" "+a.refs+" "+a.category).toLowerCase().includes(q));showTab("library");libraryCards.innerHTML=found.map(card).join("")||'<div class="card">No matching local articles. Try an Internet search.</div>';};
+function onlineSearch(){const q=search.value.trim()||"Bible and world history";window.open("https://www.google.com/search?q="+encodeURIComponent(q)," _blank","noopener")}
+document.getElementById("search").addEventListener("keydown",e=>{if(e.key==="Enter")document.getElementById("searchBtn").click()});
+document.getElementById("shareBtn").onclick=async()=>{const data={title:document.title,text:"Explore DMC – Gospel & World History",url:location.href};if(navigator.share){try{await navigator.share(data)}catch(e){}}else{await navigator.clipboard?.writeText(location.href);alert("App link copied if clipboard access is available.")}};
+document.getElementById("copyBtn").onclick=async()=>{try{await navigator.clipboard.writeText(location.href);alert("Link copied.")}catch(e){alert("Copy this page address from your browser.")}};
+let dmcMap;function initMap(){if(!window.L)return;dmcMap=L.map("map").setView([31,35],3);L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{attribution:"© OpenStreetMap contributors"}).addTo(dmcMap);places.forEach(p=>L.marker([p[2],p[3]]).addTo(dmcMap).bindPopup("<b>"+esc(p[0])+"</b><br>"+esc(p[1])).on("click",()=>mapInfo.innerHTML="<h3>"+esc(p[0])+"</h3><p>"+esc(p[1])+"</p>"));wonders.forEach(w=>L.circleMarker([w[3],w[4]],{radius:7}).addTo(dmcMap).bindPopup("<b>"+esc(w[0])+"</b><br>"+esc(w[1])));setTimeout(()=>dmcMap.invalidateSize(),250)}
+function focusPlace(lat,lon){showTab("maps");if(!dmcMap)initMap();if(dmcMap){dmcMap.setView([lat,lon],7);setTimeout(()=>dmcMap.invalidateSize(),200)}}
+render();
+if("serviceWorker"in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
+</script></body></html>
