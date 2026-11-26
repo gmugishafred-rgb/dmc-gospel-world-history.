@@ -266,10 +266,10 @@ document.querySelectorAll('body *').forEach(el=>{
 if(el.children.length===0&&el.textContent.trim()){
 if(!el.dataset.langOriginal)el.dataset.langOriginal=el.textContent;
 const base=el.dataset.langOriginal.trim(),translated=translations[lang]?.[base];
-if(translated)el.textContent=el.dataset.langOriginal.replace(base,translated);
+el.textContent=translated?el.dataset.langOriginal.replace(base,translated):el.dataset.langOriginal;
 }
 ['placeholder','title','aria-label'].forEach(attr=>{
-if(el.hasAttribute(attr)){const key='langOrig'+attr;if(!el.dataset[key])el.dataset[key]=el.getAttribute(attr);const base=el.dataset[key];if(translations[lang]?.[base])el.setAttribute(attr,translations[lang][base]);}
+if(el.hasAttribute(attr)){const key='langOrig'+attr;if(!el.dataset[key])el.dataset[key]=el.getAttribute(attr);const base=el.dataset[key];el.setAttribute(attr,translations[lang]?.[base]||base);}
 });
 });
 localStorage.setItem('dmcAppLanguage',lang);
