@@ -1,5 +1,5 @@
-const CACHE = "dmc-gospel-history-v22";
-const CORE = ["./", "./index.html", "./manifest.json", "./bible-stories.js", "./quiz.js", "./rhythms.js", "./hymnal-library.js", "./dmc-translate.js", "./restore-content.js"];
+const CACHE = "dmc-gospel-history-v23";
+const CORE = ["./", "./index.html", "./manifest.json", "./bible-stories.js", "./quiz.js", "./rhythms.js", "./hymnal-library.js", "./dmc-translate.js", "./restore-content.js?v=23"];
 self.addEventListener("install", event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(CORE)));
   self.skipWaiting();
