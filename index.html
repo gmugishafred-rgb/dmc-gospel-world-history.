@@ -20,7 +20,7 @@
 <div class="card"><span class="tag">Welcome</span><h2>Discover the Bible and the history of the world</h2><p>This learning resource connects biblical events, ancient civilizations, historical places and the wider story of humanity. Read, explore maps, search for more information online, and share what you learn.</p><p><b>“Go therefore and make disciples of all nations…”</b> — Matthew 28:19</p><button class="btn gold" onclick="showTab('gospel')">Explore Gospel</button></div>
 <h2>Explore the collection</h2><div id="homeCards" class="grid"></div>
 </section>
-<section id="bible" class="section"><h2>Holy Bible – 66 Books</h2><p class="muted">Browse all 39 books of the Old Testament and 27 books of the New Testament. Choose a book to open its chapters and read the Scripture online. Bible text is provided by the linked Bible service, not stored in this app.</p><div class="toolbar"><button class="active" data-bible-testament="all">All 66</button><button data-bible-testament="old">Old Testament (39)</button><button data-bible-testament="new">New Testament (27)</button></div><div id="bibleBooks" class="grid"></div><div id="bibleReader" class="hidden" style="margin-top:18px"></div></section>
+<section id="bible" class="section"><h2>Holy Bible – 66 Books</h2><p class="muted">Browse all 66 books and choose a chapter. Select Bibiliya Yera in Kinyarwanda or King James Version in English.</p><div class="card" style="margin-bottom:14px"><label for="bibleLanguage"><b>Language / Ururimi</b></label><select id="bibleLanguage"><option value="rw">Kinyarwanda — Bibiliya Yera (BYSB)</option><option value="en">English — King James Version (KJV)</option></select><p class="muted" id="bibleLanguageNote">Bibiliya Yera is published by Bible Society of Rwanda and opens through Bible.com.</p></div><div class="toolbar"><button class="active" data-bible-testament="all">All 66</button><button data-bible-testament="old">Old Testament (39)</button><button data-bible-testament="new">New Testament (27)</button></div><div id="bibleBooks" class="grid"></div><div id="bibleReader" class="hidden" style="margin-top:18px"></div></section>
 <section id="mybooks" class="section"><h2>Books by Mugisha Fred Elisha</h2><p class="muted">A personal Christian book collection. The titles below are listed in the library; upload the original PDF manuscripts to make the complete books readable and downloadable here.</p><div id="myBookCards" class="grid"></div></section>
 <section id="gospel" class="section"><h2>Gospel & Biblical History</h2><p class="muted">Introductory study notes with Scripture references. Check the biblical text and reliable historical sources for deeper study.</p><div id="gospelCards" class="grid"></div></section>
 <section id="history" class="section"><h2>World History</h2><p class="muted">A brief introduction to civilizations and historical periods.</p><div id="historyCards" class="grid"></div></section>
@@ -50,11 +50,24 @@ function renderBible(filter="all"){
  document.getElementById("bibleBooks").innerHTML=list.map(b=>'<article class="card"><span class="tag">'+(b[2]==="OT"?"Old Testament":"New Testament")+'</span><h3>'+esc(b[0])+'</h3><p class="muted">'+b[3]+' chapters</p><label for="chapter-'+esc(b[1].replace(/[^a-z0-9]/gi,"-"))+'">Choose chapter</label><select id="chapter-'+esc(b[1].replace(/[^a-z0-9]/gi,"-"))+'" class="bible-chapter">'+Array.from({length:b[3]},(_,i)=>'<option value="'+(i+1)+'">Chapter '+(i+1)+'</option>').join("")+'</select><br><br><button class="btn read-bible" data-book="'+esc(b[1])+'" data-select="chapter-'+esc(b[1].replace(/[^a-z0-9]/gi,"-"))+'">Read in DMC</button></article>').join("");
  document.querySelectorAll(".read-bible").forEach(btn=>btn.addEventListener("click",()=>{currentBibleBook=btn.dataset.book;currentBibleChapter=Number(document.getElementById(btn.dataset.select).value);loadBibleChapter()}));
 }
+const bibleBookCodes={"Genesis":"GEN","Exodus":"EXO","Leviticus":"LEV","Numbers":"NUM","Deuteronomy":"DEU","Joshua":"JOS","Judges":"JDG","Ruth":"RUT","1 Samuel":"1SA","2 Samuel":"2SA","1 Kings":"1KI","2 Kings":"2KI","1 Chronicles":"1CH","2 Chronicles":"2CH","Ezra":"EZR","Nehemiah":"NEH","Esther":"EST","Job":"JOB","Psalms":"PSA","Proverbs":"PRO","Ecclesiastes":"ECC","Song of Solomon":"SNG","Isaiah":"ISA","Jeremiah":"JER","Lamentations":"LAM","Ezekiel":"EZK","Daniel":"DAN","Hosea":"HOS","Joel":"JOL","Amos":"AMO","Obadiah":"OBA","Jonah":"JON","Micah":"MIC","Nahum":"NAM","Habakkuk":"HAB","Zephaniah":"ZEP","Haggai":"HAG","Zechariah":"ZEC","Malachi":"MAL","Matthew":"MAT","Mark":"MRK","Luke":"LUK","John":"JHN","Acts":"ACT","Romans":"ROM","1 Corinthians":"1CO","2 Corinthians":"2CO","Galatians":"GAL","Ephesians":"EPH","Philippians":"PHP","Colossians":"COL","1 Thessalonians":"1TH","2 Thessalonians":"2TH","1 Timothy":"1TI","2 Timothy":"2TI","Titus":"TIT","Philemon":"PHM","Hebrews":"HEB","James":"JAS","1 Peter":"1PE","2 Peter":"2PE","1 John":"1JN","2 John":"2JN","3 John":"3JN","Jude":"JUD","Revelation":"REV"};
+function wireBibleNavigation(){
+ ["biblePrev","biblePrev2"].forEach(id=>{const el=document.getElementById(id);if(el)el.onclick=()=>changeBibleChapter(-1)});
+ ["bibleNext","bibleNext2"].forEach(id=>{const el=document.getElementById(id);if(el)el.onclick=()=>changeBibleChapter(1)});
+}
 async function loadBibleChapter(){
  const panel=document.getElementById("bibleReader");
+ const language=document.getElementById("bibleLanguage").value;
  panel.classList.remove("hidden");
- panel.innerHTML='<div class="card"><h3>'+esc(currentBibleBook)+' '+currentBibleChapter+'</h3><p>Loading Scripture…</p></div>';
  panel.scrollIntoView({behavior:"smooth",block:"start"});
+ if(language==="rw"){
+  const code=bibleBookCodes[currentBibleBook];
+  const url="https://www.bible.com/bible/351/"+code+"."+currentBibleChapter+".BYSB";
+  panel.innerHTML='<div class="card"><span class="tag">Bibiliya Yera (BYSB)</span><h2>'+esc(currentBibleBook)+' '+currentBibleChapter+'</h2><p>Bibiliya Yera yasohowe na Bible Society of Rwanda. Kubera ko inyandiko yayo ifite uburenganzira bw’umwanditsi, DMC iragufungurira iki gice kuri Bible.com aho ushobora kugisoma.</p><p><a class="btn gold" href="'+url+'" target="_blank" rel="noopener noreferrer">Soma muri Bibiliya Yera</a></p><div class="toolbar"><button class="btn" id="biblePrev2">← Igice kibanziriza iki</button><button class="btn" id="bibleNext2">Igice gikurikira →</button></div><p class="muted">Urubuga rwa Bible.com rushobora kugusaba gufungura cyangwa kwinjira muri porogaramu ya YouVersion.</p></div>';
+  wireBibleNavigation();
+  return;
+ }
+ panel.innerHTML='<div class="card"><h3>'+esc(currentBibleBook)+' '+currentBibleChapter+'</h3><p>Loading Scripture…</p></div>';
  try{
   const url="https://bible-api.com/"+encodeURIComponent(currentBibleBook+" "+currentBibleChapter)+"?translation=kjv";
   const response=await fetch(url);
@@ -62,8 +75,7 @@ async function loadBibleChapter(){
   const data=await response.json();
   if(!data.verses||!data.verses.length)throw new Error("No verses returned");
   panel.innerHTML='<div class="card"><div class="toolbar" style="justify-content:space-between"><button class="btn" id="biblePrev">← Previous</button><span class="tag">King James Version (KJV)</span><button class="btn" id="bibleNext">Next →</button></div><h2>'+esc(currentBibleBook)+' '+currentBibleChapter+'</h2><div class="bible-text">'+data.verses.map(v=>'<p><sup class="tag">'+v.verse+'</sup> '+esc(v.text.trim())+'</p>').join("")+'</div><div class="toolbar"><button class="btn" id="biblePrev2">← Previous chapter</button><button class="btn gold" id="bibleNext2">Next chapter →</button></div><p class="muted">King James Version (public domain). Scripture text is displayed inside DMC.</p></div>';
-  ["biblePrev","biblePrev2"].forEach(id=>document.getElementById(id).onclick=()=>changeBibleChapter(-1));
-  ["bibleNext","bibleNext2"].forEach(id=>document.getElementById(id).onclick=()=>changeBibleChapter(1));
+  wireBibleNavigation();
  }catch(error){
   panel.innerHTML='<div class="card"><h3>Could not load Scripture</h3><p>Check your Internet connection and try again. The Bible reader displays the text inside DMC when the service is reachable.</p><button class="btn" id="retryBible">Try again</button></div>';
   document.getElementById("retryBible").onclick=loadBibleChapter;
@@ -78,6 +90,7 @@ function changeBibleChapter(direction){
 }
 function renderAuthorBooks(){document.getElementById("myBookCards").innerHTML=authorBooks.map(b=>'<article class="card"><span class="tag">By Mugisha Fred Elisha</span><h3>'+esc(b.title)+'</h3><p>'+esc(b.description)+'</p><p class="muted">The original PDF manuscript has not yet been added to this app.</p></article>').join("")}
 document.querySelectorAll("[data-bible-testament]").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll("[data-bible-testament]").forEach(x=>x.classList.toggle("active",x===b));renderBible(b.dataset.bibleTestament)}));
+document.getElementById("bibleLanguage").addEventListener("change",e=>{document.getElementById("bibleLanguageNote").textContent=e.target.value==="rw"?"Bibiliya Yera (BYSB), published by Bible Society of Rwanda, opens on Bible.com.":"King James Version (KJV) is read directly inside DMC.";if(!document.getElementById("bibleReader").classList.contains("hidden"))loadBibleChapter()});
 
 const base=[
 {title:"Creation and the beginning",category:"Gospel",refs:"Genesis 1–2",body:"Genesis opens the biblical story with God as Creator of heaven and earth. These chapters introduce humanity, the created world and the human vocation before God."},
