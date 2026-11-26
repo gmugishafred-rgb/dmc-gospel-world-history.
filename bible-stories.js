@@ -49,7 +49,7 @@ var johnChapters=[
 var johnBox=document.createElement("section");
 johnBox.className="card";
 johnBox.style.marginTop="22px";
-johnBox.innerHTML='<h2>📖 Igitabo cya Yohana — Ibyigisho by'ibice 21</h2><p class="muted">Soma incamake ya buri gice, uhitemo ururimi, hanyuma ukurikize umurongo wo muri Bibiliya. / Explore all 21 chapters of the Gospel of John.</p><div id="johnChapterGrid" class="story-layout"></div><div id="johnChapterDetail" class="story-detail"></div>';
+johnBox.innerHTML='<h2>📖 Igitabo cya Yohana — Ibyigisho by\\'ibice 21</h2><p class="muted">Soma incamake ya buri gice, uhitemo ururimi, hanyuma ukurikize umurongo wo muri Bibiliya. / Explore all 21 chapters of the Gospel of John.</p><div id="johnChapterGrid" class="story-layout"></div><div id="johnChapterDetail" class="story-detail"></div>';
 sec.appendChild(johnBox);
 var jgrid=johnBox.querySelector("#johnChapterGrid"),jdetail=johnBox.querySelector("#johnChapterDetail");
 function renderJohn(){
@@ -57,5 +57,59 @@ function renderJohn(){
  jgrid.querySelectorAll("[data-john]").forEach(function(btn){btn.addEventListener("click",function(){var i=Number(btn.dataset.john),c=johnChapters[i];jdetail.innerHTML='<article class="card"><h3>'+(lang==="rw"?c[0]:c[1])+'</h3><p>'+(lang==="rw"?c[2]:c[3])+'</p><p><b>'+(lang==="rw"?"Icyanditswe:":"Scripture:")+'</b> '+(lang==="rw"?"Yohana ":"John ")+(i+1)+'</p><a href="https://www.bible.com/bible/compare/JHN.'+(i+1)+'.BYSB" target="_blank" rel="noopener">'+(lang==="rw"?"Soma muri Bibiliya Yera":"Read in Bibiliya Yera")+'</a> · <a href="https://www.bible.com/bible/1/JHN.'+(i+1)+'.KJV" target="_blank" rel="noopener">Read KJV</a></article>';jdetail.scrollIntoView({behavior:"smooth",block:"nearest"})})});
 }
 renderJohn();
+
+
+/* Apostle Paul study: biography, missionary journeys, letters and theology */
+var paulData={
+life:[
+["Savuli w'i Taruso","Saul of Tarsus","Yavutse i Taruso muri Kilikiya, yari Umuyahudi wo mu muryango wa Benyamini, afite ubwenegihugu bw'Abaroma kandi yigishijwe amategeko. Yari Umufarisayo.","Born in Tarsus in Cilicia, from the tribe of Benjamin, a Roman citizen, trained in the Law, and a Pharisee.","Ibyakozwe 21:39; 22:3,25-28; Abafilipi 3:5"],
+["Gutoteza Itorero","Persecuting the church","Mbere yo guhura na Kristo, Savuli yatotezaga abigishwa kandi yemera ko Sitefano yicwa.","Before meeting Christ, Saul persecuted believers and approved of Stephen's death.","Ibyakozwe 7:58–8:3; 9:1–2"],
+["Guhura na Yesu mu nzira ijya i Damasiko","Encounter on the Damascus road","Yesu yamubonekeye mu mucyo. Savuli ahuma amaso by'agateganyo; Ananiya aramusengera, arongera arabona kandi arabatizwa.","Jesus confronted Saul with a heavenly light. Saul was temporarily blinded; Ananias prayed for him, his sight returned, and he was baptized.","Ibyakozwe 9:1–19; 22:6–16; 26:12–18"],
+["Kuva ku mutotezi akaba intumwa","From persecutor to apostle","Savuli yahindutse umwigishwa wa Kristo, atangira kubwiriza ko Yesu ari Umwana w'Imana. Izina Pawulo rikoreshwa cyane mu murimo we w'ivugabutumwa.","Saul became a disciple of Christ and began proclaiming Jesus as the Son of God. The name Paul is used throughout his missionary ministry.","Ibyakozwe 9:20–31; 13:9"],
+["Gukorera muri Antiyokiya","Ministry in Antioch","Pawulo yakoranye na Barinaba, yigisha Itorero ryo muri Antiyokiya, aho abigishwa batangiye kwitwa Abakristo.","Paul served with Barnabas and taught in Antioch, where disciples were first called Christians.","Ibyakozwe 11:25–26; 13:1–3; Abagalatiya 1:15–24"],
+["Gufungwa no kugera i Roma","Imprisonment and arrival in Rome","Pawulo yarafashwe, aburana imbere y'abategetsi, ajyanwa i Roma nk'imfungwa. Ibyakozwe birangirira yigisha abantu i Roma.","Paul was arrested, defended himself before authorities, and was taken to Rome as a prisoner. Acts ends with him preaching in Rome.","Ibyakozwe 21–28"]
+],
+journeys:[
+["Urugendo rwa mbere","First missionary journey","Antiyokiya → Shipure → Perge → Antiyokiya y'i Pisidiya → Ikoniyo → Lisitira → Derube → gusubira Antiyokiya.","Antioch → Cyprus → Perga → Pisidian Antioch → Iconium → Lystra → Derbe → return to Antioch.","Ibyakozwe 13–14"],
+["Urugendo rwa kabiri","Second missionary journey","Pawulo na Sila banyuze muri Siriya na Kilikiya, Lisitira, Filipi, Tesalonike, Beroya, Atenayi na Korinto. Timoteyo yifatanya na Pawulo.","Paul and Silas travelled through Syria and Cilicia, Lystra, Philippi, Thessalonica, Berea, Athens and Corinth. Timothy joined the mission.","Ibyakozwe 15:36–18:22"],
+["Urugendo rwa gatatu","Third missionary journey","Pawulo yakomeje mu Galatiya na Firigiya, amara igihe i Efeso, anyura muri Makedoniya n'Ubugiriki, agaruka anyuze i Mileto na Tiro ajya i Yerusalemu.","Paul strengthened churches in Galatia and Phrygia, spent an extended period in Ephesus, travelled through Macedonia and Greece, and returned via Miletus and Tyre to Jerusalem.","Ibyakozwe 18:23–21:17"],
+["Urugendo ajyanywe i Roma","Journey to Rome as a prisoner","Nyuma yo kuburana, Pawulo ajyanwa i Roma; ubwato burarohama hafi ya Malta ariko abantu bararokoka.","As a prisoner Paul was taken to Rome. The ship was wrecked near Malta, but everyone survived.","Ibyakozwe 27–28"]
+],
+letters:[
+["Abaroma","Romans","Ubutumwa bwiza, icyaha, gutsindishirizwa no kwizera, ubuntu, ubuzima bushya muri Kristo, Isirayeli n'ubuzima bwa gikristo.","The gospel, sin, justification by faith, grace, new life in Christ, Israel, and Christian living.","Abaroma 1–16"],
+["1 Abakorinto","1 Corinthians","Ubumwe bw'Itorero, amacakubiri, ukwera, urushako, impano z'Umwuka, urukundo, Ifunguro ry'Umwami n'izuka.","Church unity, divisions, holiness, marriage, spiritual gifts, love, the Lord's Supper, and resurrection.","1 Abakorinto 1–16"],
+["2 Abakorinto","2 Corinthians","Guhumurizwa mu mibabaro, umurimo w'ubutumwa, ubuntu bwo gutanga, intege nke n'imbaraga za Kristo.","Comfort in suffering, apostolic ministry, generosity, weakness, and Christ's power.","2 Abakorinto 1–13"],
+["Abagalatiya","Galatians","Gutsindishirizwa no kwizera Kristo, umudendezo mu butumwa bwiza, no kubaho uyobowe n'Umwuka.","Justification through faith in Christ, gospel freedom, and life led by the Spirit.","Abagalatiya 1–6"],
+["Abefeso","Ephesians","Agakiza ku bw'ubuntu, ubumwe muri Kristo, Itorero nk'umubiri wa Kristo, imibanire mishya n'intwaro z'Imana.","Salvation by grace, unity in Christ, the church as Christ's body, renewed relationships, and the armor of God.","Abefeso 1–6"],
+["Abafilipi","Philippians","Ibyishimo muri Kristo, kwicisha bugufi kwa Yesu, gukomera mu kwizera no kunyurwa muri byose.","Joy in Christ, Jesus' humility, perseverance in faith, and contentment.","Abafilipi 1–4"],
+["Abakolosayi","Colossians","Ubusumbane n'ubwuzure bwa Kristo, kwirinda inyigisho ziyobya, no kwambara umuntu mushya.","Christ's supremacy and fullness, resisting deceptive teaching, and putting on the new self.","Abakolosayi 1–4"],
+["1 Abatesalonike","1 Thessalonians","Kwizera, urukundo, kwihangana, kwezwa no kugaruka kwa Yesu.","Faith, love, endurance, holiness, and the return of Jesus.","1 Abatesalonike 1–5"],
+["2 Abatesalonike","2 Thessalonians","Gukomera mu bitotezo, iby'umunsi w'Umwami no gukorana umwete.","Steadfastness under persecution, the day of the Lord, and responsible work.","2 Abatesalonike 1–3"],
+["1 Timoteyo","1 Timothy","Inyigisho nzima, gahunda y'Itorero, ibisabwa ku bayobozi, gusenga no kurinda inyigisho z'ukuri.","Sound teaching, church order, qualifications for leaders, prayer, and guarding the faith.","1 Timoteyo 1–6"],
+["2 Timoteyo","2 Timothy","Kudaterwa isoni n'ubutumwa bwiza, kwihangana mu murimo, Ibyanditswe byera no kurangiza urugendo neza.","Not being ashamed of the gospel, enduring in ministry, the Scriptures, and finishing faithfully.","2 Timoteyo 1–4"],
+["Tito","Titus","Gushyiraho abayobozi b'Itorero, inyigisho nzima, imirimo myiza n'ubuntu bw'Imana buhindura abantu.","Appointing church elders, sound doctrine, good works, and God's transforming grace.","Tito 1–3"],
+["Filemoni","Philemon","Pawulo asabira Onesimo kwakirwa nk'umuvandimwe muri Kristo, agaragaza imbabazi n'ubwiyunge.","Paul appeals for Onesimus to be welcomed as a brother in Christ, modelling mercy and reconciliation.","Filemoni 1"]
+],
+themes:[
+["Agakiza ni ubuntu bw'Imana, kakirwa no kwizera Yesu Kristo.","Salvation is God's gift of grace, received through faith in Jesus Christ.","Abaroma 3:21–28; Abefeso 2:8–10"],
+["Muri Kristo habaho kubabarirwa no guhinduka; ubuzima bushya ni imbuto zo kwizera.","In Christ there is forgiveness and transformation; new life is the fruit of faith.","2 Abakorinto 5:17; Abagalatiya 2:20"],
+["Itorero ni umubiri umwe ufite ingingo nyinshi n'impano zitandukanye.","The church is one body with many members and different gifts.","1 Abakorinto 12"],
+["Urukundo ni rwo rugenga imikoreshereze y'impano n'imibanire y'abizera.","Love should govern spiritual gifts and relationships among believers.","1 Abakorinto 13"],
+["Umwuka Wera ayobora abizera mu kwezwa no kwera imbuto.","The Holy Spirit leads believers into holiness and spiritual fruit.","Abagalatiya 5:16–26"],
+["Umukristo ahamagarirwa kwambara intwaro z'Imana no guhagarara ashikamye.","Christians are called to put on God's armor and stand firm.","Abefeso 6:10–18"],
+["Izuka rya Yesu ni ishingiro ry'ibyiringiro n'izuka ry'abizera.","Jesus' resurrection is the foundation of Christian hope and the resurrection of believers.","1 Abakorinto 15"]
+]
+};
+var paulSection=document.createElement("section");
+paulSection.className="card";paulSection.style.marginTop="22px";
+paulSection.innerHTML='<h2>✝️ Intumwa Pawulo — Ubuzima, ingendo n&#39;inzandiko</h2><p class="muted">Inyigisho mu Kinyarwanda no mu Cyongereza: ubuzima bwa Pawulo, guhinduka kwe, ingendo z&#39;ivugabutumwa, inzandiko 13 n&#39;inyigisho z&#39;ingenzi. / Bilingual study of Paul&#39;s life, conversion, missionary journeys, thirteen letters and major teachings.</p><div class="story-actions"><button data-paul-tab="life">Ubuzima / Life</button><button data-paul-tab="journeys">Ingendo / Journeys</button><button data-paul-tab="letters">Inzandiko 13 / Letters</button><button data-paul-tab="themes">Inyigisho / Teachings</button></div><div id="paulContent" class="story-detail"></div>';
+sec.appendChild(paulSection);
+var paulContent=paulSection.querySelector("#paulContent");
+function renderPaul(kind){
+ var rows=paulData[kind];
+ paulContent.innerHTML=rows.map(function(r,i){var title=lang==="rw"?r[0]:r[1],body=lang==="rw"?r[2]:r[3],ref=r[4]||"";return '<article class="story-card" style="margin:10px 0"><h3>'+(kind==="letters"?(i+1)+". ":"")+title+'</h3><p>'+body+'</p>'+(ref?'<p class="muted"><b>'+(lang==="rw"?"Aho dusoma:":"Read:")+'</b> '+ref+'</p>':"")+'</article>'}).join("");
+}
+paulSection.querySelectorAll("[data-paul-tab]").forEach(function(btn){btn.addEventListener("click",function(){renderPaul(btn.dataset.paulTab)})});
+renderPaul("life");
 
 })();
