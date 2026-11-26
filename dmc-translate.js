@@ -1,47 +1,98 @@
-/* DMC full-content translation helper (online translation; cached on this device) */
-(function(){
- const sel=document.getElementById('appLanguage'); if(!sel)return;
- const cacheKey='dmcTranslationCacheV1';
- let cache={}; try{cache=JSON.parse(localStorage.getItem(cacheKey)||'{}')}catch{}
- const original=new WeakMap(); let running=false,observer;
- const skipTags=new Set(['SCRIPT','STYLE','NOSCRIPT','TEXTAREA','INPUT','SELECT','OPTION']);
- function lang(){return sel.value||'en'}
- function nodes(){
-  const out=[]; const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
-  while(walker.nextNode()){const n=walker.currentNode, p=n.parentElement;if(!p||skipTags.has(p.tagName)||!n.nodeValue.trim()||p.closest('[data-translation-ignore]'))continue;out.push(n)}
-  return out;
- }
- async function translateText(s,target){
-  const key=target+'|'+s;if(cache[key])return cache[key];
-  try{
-   const url='https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl='+target+'&dt=t&q='+encodeURIComponent(s);
-   const res=await fetch(url);if(!res.ok)throw 0;const data=await res.json();
-   const translated=(data[0]||[]).map(x=>x[0]).join('');if(translated){cache[key]=translated;return translated}
-  }catch(e){}
-  return s;
- }
- async function apply(){
-  if(running)return;running=true;const target=lang();
-  if(observer)observer.disconnect();
-  const list=nodes();
-  for(let i=0;i<list.length;i++){
-   const n=list[i];if(!original.has(n))original.set(n,n.nodeValue);
-   const base=original.get(n);
-   if(target==='en'){continue}
-   const tr=await translateText(base,target);n.nodeValue=tr;
+/* DMC whole-page language translation. First-time translations require internet; results are cached locally. */
+(function () {
+  const selector = document.getElementById("appLanguage");
+  if (!selector) return;
+
+  const CACHE_KEY = "dmcTranslationCacheV2";
+  const cache = (() => { try { return JSON.parse(localStorage.getItem(CACHE_KEY) || "{}"); } catch (_) { return {}; } })();
+  const originals = new WeakMap();
+  const lastTranslated = new WeakMap();
+  const attrOriginals = new WeakMap();
+  const attrLast = new WeakMap();
+  const ignored = new Set(["SCRIPT", "STYLE", "NOSCRIPT", "TEXTAREA", "INPUT"]);
+  let busy = false, pending = false, observer, debounce;
+
+  function targetLanguage() { return selector.value || "rw"; }
+  function textNodes() {
+    const found = [], walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    while (walker.nextNode()) {
+      const node = walker.currentNode, parent = node.parentElement;
+      if (!parent || ignored.has(parent.tagName) || !node.nodeValue.trim() ||
+          parent.closest("[data-translation-ignore]")) continue;
+      found.push(node);
+    }
+    return found;
   }
-  for(const el of document.querySelectorAll('input[placeholder],button[title],img[alt], [aria-label]')){
-   for(const attr of ['placeholder','title','alt','aria-label']){
-    if(!el.hasAttribute(attr))continue;const k=attr+'Original';if(!el.dataset[k])el.dataset[k]=el.getAttribute(attr);
-    const base=el.dataset[k];if(target==='en'){el.setAttribute(attr,base);continue}
-    el.setAttribute(attr,await translateText(base,target));
-   }
+  async function translate(text, lang) {
+    if (!text || !text.trim() || lang === "en") return text;
+    const key = lang + "|" + text;
+    if (Object.prototype.hasOwnProperty.call(cache, key)) return cache[key];
+    try {
+      const url = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=" +
+        encodeURIComponent(lang) + "&dt=t&q=" + encodeURIComponent(text);
+      const response = await fetch(url);
+      if (!response.ok) return text;
+      const data = await response.json();
+      const result = (data[0] || []).map(part => part[0] || "").join("");
+      if (result) { cache[key] = result; return result; }
+    } catch (_) {}
+    return text;
   }
-  try{localStorage.setItem(cacheKey,JSON.stringify(cache))}catch{}
-  running=false;if(observer)observer.observe(document.body,{childList:true,subtree:true,characterData:true});
- }
- observer=new MutationObserver(()=>{if(!running)apply()});
- sel.addEventListener('change',apply);
- observer.observe(document.body,{childList:true,subtree:true,characterData:true});
- window.dmcTranslateAll=apply;
+  async function apply() {
+    if (busy) { pending = true; return; }
+    busy = true;
+    if (observer) observer.disconnect();
+    const lang = targetLanguage();
+    try {
+      const nodes = textNodes();
+      const jobs = [];
+      for (const node of nodes) {
+        const current = node.nodeValue;
+        let base = originals.get(node);
+        if (base === undefined) { base = current; originals.set(node, base); }
+        else if (current !== lastTranslated.get(node) && current !== base) {
+          base = current; originals.set(node, base);
+        }
+        if (lang === "en") { node.nodeValue = base; lastTranslated.set(node, base); }
+        else jobs.push({ node, base });
+      }
+      for (let i = 0; i < jobs.length; i += 5) {
+        await Promise.all(jobs.slice(i, i + 5).map(async job => {
+          const result = await translate(job.base, lang);
+          job.node.nodeValue = result;
+          lastTranslated.set(job.node, result);
+        }));
+      }
+      const attrs = ["placeholder", "title", "alt", "aria-label"];
+      for (const el of document.querySelectorAll("[placeholder], [title], [alt], [aria-label]")) {
+        let saved = attrOriginals.get(el); if (!saved) { saved = {}; attrOriginals.set(el, saved); }
+        let last = attrLast.get(el); if (!last) { last = {}; attrLast.set(el, last); }
+        for (const attr of attrs) {
+          if (!el.hasAttribute(attr)) continue;
+          const current = el.getAttribute(attr);
+          if (saved[attr] === undefined || (current !== last[attr] && current !== saved[attr])) saved[attr] = current;
+          if (lang === "en") { el.setAttribute(attr, saved[attr]); last[attr] = saved[attr]; }
+          else { const result = await translate(saved[attr], lang); el.setAttribute(attr, result); last[attr] = result; }
+        }
+      }
+      try { localStorage.setItem(CACHE_KEY, JSON.stringify(cache)); } catch (_) {}
+      document.documentElement.lang = lang;
+    } finally {
+      busy = false;
+      if (observer) observer.observe(document.body, { childList: true, subtree: true, characterData: true });
+      if (pending) { pending = false; schedule(); }
+    }
+  }
+  function schedule() {
+    clearTimeout(debounce);
+    debounce = setTimeout(() => { if (busy) pending = true; else apply(); }, 180);
+  }
+  observer = new MutationObserver(schedule);
+  selector.addEventListener("change", apply);
+  const savedLang = localStorage.getItem("dmcAppLanguage");
+  if (savedLang && ["rw", "en", "fr"].includes(savedLang)) selector.value = savedLang;
+  else { selector.value = "rw"; localStorage.setItem("dmcAppLanguage", "rw"); }
+  apply();
+  observer.observe(document.body, { childList: true, subtree: true, characterData: true });
+  window.dmcTranslateAll = apply;
 })();
