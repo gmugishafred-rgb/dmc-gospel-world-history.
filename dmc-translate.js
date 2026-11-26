@@ -27,7 +27,7 @@
   for(let i=0;i<list.length;i++){
    const n=list[i];if(!original.has(n))original.set(n,n.nodeValue);
    const base=original.get(n);
-   if(target==='en'){n.nodeValue=base;continue}
+   if(target==='en'){continue}
    const tr=await translateText(base,target);n.nodeValue=tr;
   }
   for(const el of document.querySelectorAll('input[placeholder],button[title],img[alt], [aria-label]')){
