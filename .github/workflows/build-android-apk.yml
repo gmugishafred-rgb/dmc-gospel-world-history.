@@ -5,6 +5,9 @@ on:
   push:
     paths:
       - 'android/**'
+      - 'index.html'
+      - 'bible-satellite-explorer.js'
+      - 'sw.js'
       - '.github/workflows/build-android-apk.yml'
 
 permissions:
