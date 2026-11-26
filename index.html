@@ -12,6 +12,7 @@
 <body>
 <header><h1>DMC – Gospel & World History</h1><p>Go and make disciples • Explore the story of faith and humanity</p></header>
 <main class="wrap">
+<div class="card" id="installCard" style="margin-bottom:14px"><b>Install DMC on your phone</b><p class="muted">Use this same website as an app. On supported browsers, tap Install DMC. On iPhone, use Share → Add to Home Screen.</p><button class="btn gold" id="installAppBtn" type="button" hidden>Install DMC App</button></div>
 <div class="search"><input id="search" placeholder="Search articles, places, events…"><button class="btn" id="searchBtn">Search DMC</button><button class="btn gold" id="webSearchBtn" type="button">Search Internet</button></div>
 <nav class="toolbar" aria-label="Main navigation">
 <button class="active" data-tab="home">Home</button><button data-tab="bible">Holy Bible</button><button data-tab="mybooks">My Books</button><button data-tab="jesus">Yesu Kristo</button><button data-tab="gospel">Gospel</button><button data-tab="history">History</button><button data-tab="timeline">Timeline</button><button data-tab="maps">Maps</button><button data-tab="wonders">Seven Wonders</button><button data-tab="library">Library</button><button data-tab="updates">Updates</button><button data-tab="admin">Admin</button>
@@ -229,6 +230,12 @@ document.getElementById("shareBtn").onclick=async()=>{const data={title:document
 document.getElementById("copyBtn").onclick=async()=>{try{await navigator.clipboard.writeText(location.href);alert("Link copied.")}catch(e){alert("Copy this page address from your browser.")}};
 let dmcMap;function initMap(){if(!window.L)return;dmcMap=L.map("map").setView([31,35],3);L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{attribution:"© OpenStreetMap contributors"}).addTo(dmcMap);places.forEach(p=>L.marker([p[2],p[3]]).addTo(dmcMap).bindPopup("<b>"+esc(p[0])+"</b><br>"+esc(p[1])).on("click",()=>mapInfo.innerHTML="<h3>"+esc(p[0])+"</h3><p>"+esc(p[1])+"</p>"));wonders.forEach(w=>L.circleMarker([w[3],w[4]],{radius:7}).addTo(dmcMap).bindPopup("<b>"+esc(w[0])+"</b><br>"+esc(w[1])));setTimeout(()=>dmcMap.invalidateSize(),250)}
 function focusPlace(lat,lon){showTab("maps");if(!dmcMap)initMap();if(dmcMap){dmcMap.setView([lat,lon],7);setTimeout(()=>dmcMap.invalidateSize(),200)}}
+let dmcInstallPrompt=null;
+const installButton=document.getElementById("installAppBtn");
+window.addEventListener("beforeinstallprompt",event=>{event.preventDefault();dmcInstallPrompt=event;installButton.hidden=false;});
+installButton.addEventListener("click",async()=>{if(!dmcInstallPrompt){alert("If Install is not available, open Chrome menu (⋮) and choose Install app or Add to Home screen.");return;}dmcInstallPrompt.prompt();await dmcInstallPrompt.userChoice;dmcInstallPrompt=null;installButton.hidden=true;});
+window.addEventListener("appinstalled",()=>{installButton.hidden=true;});
+if(window.matchMedia("(display-mode: standalone)").matches)installButton.hidden=true;
 render();
 if("serviceWorker"in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
 </script><script src="./bible-stories.js"></script></body></html>
