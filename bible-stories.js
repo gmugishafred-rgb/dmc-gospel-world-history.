@@ -21,7 +21,7 @@ sec.querySelector("#goHolyBible").onclick=function(){window.showTab("bible")};se
 var cards=sec.querySelector("#storyCards"),detail=sec.querySelector("#storyDetail"),lang="rw";
 function showStory(s){var title=lang==="rw"?s.rw:s.en,txt=lang==="rw"?s.rwText:s.enText;detail.innerHTML='<article class="card"><span class="tag">'+(lang==="rw"?"Inkuru yo muri Bibiliya":"Bible story")+'</span><h3>'+title+'</h3><div class="story-stage '+s.cls+'" id="activeStoryStage">'+s.icons.map(function(x){return "<span>"+x+"</span>"}).join("")+'</div><div class="story-actions"><button id="playStory">'+(lang==="rw"?"▶ Tangiza animasiyo":"▶ Play animation")+'</button><button class="secondary" id="pauseStory">'+(lang==="rw"?"Ⅱ Hagarika":"Ⅱ Pause")+'</button></div><p>'+txt+'</p><p class="muted"><b>'+(lang==="rw"?"Aho dusoma:":"Bible reference:")+'</b> '+s.ref+'</p></article>';var stage=detail.querySelector("#activeStoryStage");detail.querySelector("#playStory").onclick=function(){stage.classList.add("playing")};detail.querySelector("#pauseStory").onclick=function(){stage.classList.remove("playing")};}
 function renderCards(){cards.innerHTML=stories.map(function(s){return '<article class="story-card"><span class="tag">'+s.ref+'</span><h3>'+(lang==="rw"?s.rw:s.en)+'</h3><div class="story-stage '+s.cls+'">'+s.icons.slice(0,3).map(function(x){return "<span>"+x+"</span>"}).join("")+'</div><div class="story-actions"><button data-story="'+s.id+'">'+(lang==="rw"?"Reba inkuru":"View story")+'</button></div></article>'}).join("");cards.querySelectorAll("[data-story]").forEach(function(btn){btn.addEventListener("click",function(){showStory(stories.find(function(s){return s.id===btn.dataset.story}));detail.scrollIntoView({behavior:"smooth",block:"start"})})})}
-sec.querySelector("#storyLanguage").addEventListener("change",function(e){lang=e.target.value;renderCards();detail.innerHTML="";renderJohn();if(typeof renderPaul==="function")renderPaul(activePaulTab);if(typeof renderWellList==="function"){renderWellList();showWellScene(wellIndex)}});renderCards();
+sec.querySelector("#storyLanguage").addEventListener("change",function(e){lang=e.target.value;renderCards();detail.innerHTML="";renderJohn();if(typeof renderPaul==="function")renderPaul(activePaulTab);if(typeof renderWellList==="function"){renderWellList();showWellScene(wellIndex)};if(typeof renderPaulRoute==="function")renderPaulRoute(activePaulRoute)});renderCards();
 
 /* Gospel of John: chapter-by-chapter study guide */
 var johnChapters=[
@@ -201,8 +201,9 @@ rome:{rw:"Urugendo ajyanywe i Roma ari imfungwa",en:"Voyage to Rome as a prisone
 ["Yerusalemu","Jerusalem",31.78,35.23],["Kayisariya","Caesarea",32.50,34.89],["Sidoni","Sidon",33.56,35.37],["Mira","Myra",36.26,29.98],["Knido","Cnidus",36.69,27.37],["Kirete","Crete",35.24,24.81],["Malita","Malta",35.90,14.51],["Sirakuza","Syracuse",37.08,15.29],["Rejiyo","Rhegium",38.11,15.65],["Puteyoli","Puteoli",40.82,14.12],["Roma","Rome",41.90,12.50]]}
 };
 var paulLeaflet=null,paulRouteLayer=null,paulMarkers=null;
+var activePaulRoute="first";
 function renderPaulRoute(key){
- var route=paulRoutes[key],rw=lang==="rw",places=route.places;
+ activePaulRoute=key;var route=paulRoutes[key],rw=lang==="rw",places=route.places;
  paulRouteBoxSummary.innerHTML='<article class="card"><h3>'+(rw?route.rw:route.en)+'</h3><p><b>'+(rw?"Intera igereranyijwe: ":"Estimated distance: ")+'</b>'+route.distance+'</p><p><b>'+(rw?"Iminsi yo kugenda igereranyijwe: ":"Estimated travel days: ")+'</b>'+route.days+'</p><p><b>'+(rw?"Ibyanditswe: ":"Scripture: ")+'</b>'+route.ref+'</p><p class="muted">'+(rw?"Ibi bipimo ni igereranya ry’inzira zishoboka zishingiye ku bibanza bizwi; inzira nyayo, imihanda ya kera n’ibihe by’urugendo bishobora gutuma intera n’iminsi bihinduka. Iminsi ntibariramo igihe Pawulo yamaze yigisha cyangwa ategereje mu mijyi.":"These are approximate reconstructions of plausible routes between identified places. Ancient roads, sea routes and conditions vary. Travel days exclude time spent preaching or staying in cities.")+'</p><ol>'+places.map(function(p){return "<li>"+(rw?p[0]:p[1])+"</li>"}).join("")+'</ol></article>';
  if(!window.L){paulMapBox.querySelector("#paulJourneyMap").innerHTML="<p>Map library is unavailable. Check your Internet connection.</p>";return}
  if(!paulLeaflet){paulLeaflet=L.map("paulJourneyMap").setView([37,29],4);L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{attribution:"&copy; OpenStreetMap contributors",maxZoom:18}).addTo(paulLeaflet);paulRouteLayer=L.layerGroup().addTo(paulLeaflet);paulMarkers=L.layerGroup().addTo(paulLeaflet)}
@@ -216,6 +217,7 @@ function renderPaulRoute(key){
 var paulRouteBoxSummary=paulMapBox.querySelector("#paulRouteSummary");
 paulMapBox.querySelectorAll("[data-route]").forEach(function(b){b.onclick=function(){renderPaulRoute(b.dataset.route)}});
 renderPaulRoute("first");
-\nrenderPaul("life");
+
+renderPaul("life");
 
 })();
