@@ -298,8 +298,9 @@ function initBibleExplorer(){
  if(!window.L||explorerMap)return;
  explorerMap=L.map("bibleExplorerMap",{zoomControl:true,scrollWheelZoom:true}).setView([31.5,36],4);
  const imagery=L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",{maxZoom:19,attribution:"Satellite imagery © Esri, Maxar, Earthstar Geographics"});
- const englishLabels=L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places_Alternate/MapServer/tile/{z}/{y}/{x}",{maxZoom:19,opacity:1,attribution:"English place names © Esri"});
- imagery.addTo(explorerMap);englishLabels.addTo(explorerMap);
+ imagery.addTo(explorerMap);
+ // English-only biblical place names are supplied by our own markers/tooltips.
+
  explorerMarkerLayer=L.layerGroup().addTo(explorerMap);
  explorerRouteLayer=L.layerGroup().addTo(explorerMap);
  bibleHistoryPlaces.forEach((p,i)=>{
@@ -326,7 +327,7 @@ function selectBiblePlace(p){
  explorerMap.setView([p.lat,p.lon],Math.max(explorerMap.getZoom(),8));
 }
 
-let dmcMap;function initMap(){if(!window.L||dmcMap)return;dmcMap=L.map("map").setView([31,35],3);const satellite=L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",{maxZoom:19,attribution:"Satellite imagery © Esri, Maxar, Earthstar Geographics"});const englishLabels=L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places_Alternate/MapServer/tile/{z}/{y}/{x}",{maxZoom:19,opacity:1,attribution:"English place names © Esri"});satellite.addTo(dmcMap);englishLabels.addTo(dmcMap);places.forEach(p=>{const historic=bibleHistoryPlaces.find(q=>Math.abs(q.lat-p[2])<0.015&&Math.abs(q.lon-p[3])<0.015);const country=historic?historic.c:"Modern country identification requires checking";const refs=historic?historic.r:"See the related biblical study notes.";L.marker([p[2],p[3]]).addTo(dmcMap).bindPopup("<b>"+esc(p[0])+"</b><br>"+esc(country)+"<br>"+p[2].toFixed(5)+", "+p[3].toFixed(5)).on("click",()=>mapInfo.innerHTML="<h3>"+esc(p[0])+"</h3><p>"+esc(p[1])+"</p><p><b>Modern country:</b> "+esc(country)+"</p><p><b>Coordinates:</b> "+p[2].toFixed(5)+", "+p[3].toFixed(5)+"</p><p><b>Scripture:</b> "+esc(refs)+"</p>")});wonders.forEach(w=>L.circleMarker([w[3],w[4]],{radius:7}).addTo(dmcMap).bindPopup("<b>"+esc(w[0])+"</b><br>"+esc(w[1])));setTimeout(()=>dmcMap.invalidateSize(),250)}
+let dmcMap;function initMap(){if(!window.L||dmcMap)return;dmcMap=L.map("map").setView([31,35],3);const satellite=L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",{maxZoom:19,attribution:"Satellite imagery © Esri, Maxar, Earthstar Geographics"});satellite.addTo(dmcMap);bibleHistoryPlaces.forEach(p=>{L.marker([p.lat,p.lon]).addTo(dmcMap).bindTooltip(p.n,{direction:"top"}).bindPopup("<b>"+esc(p.n)+"</b><br>"+esc(p.c)+"<br>"+esc(p.era)+"<br>"+p.lat.toFixed(5)+", "+p.lon.toFixed(5)).on("click",()=>mapInfo.innerHTML="<h3>"+esc(p.n)+"</h3><p>"+esc(p.e)+"</p><p><b>Modern country:</b> "+esc(p.c)+"</p><p><b>Bible history period:</b> "+esc(p.era)+"</p><p><b>Coordinates:</b> "+p.lat.toFixed(5)+", "+p.lon.toFixed(5)+"</p><p><b>Scripture:</b> "+esc(p.r)+"</p>")});wonders.forEach(w=>L.circleMarker([w[3],w[4]],{radius:7}).addTo(dmcMap).bindPopup("<b>"+esc(w[0])+"</b><br>"+esc(w[1])));setTimeout(()=>dmcMap.invalidateSize(),250)}
 function focusPlace(lat,lon){showTab("maps");if(!dmcMap)initMap();if(dmcMap){dmcMap.setView([lat,lon],7);setTimeout(()=>dmcMap.invalidateSize(),200)}}
 let dmcInstallPrompt=null;
 const installButton=document.getElementById("installAppBtn");
