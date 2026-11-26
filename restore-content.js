@@ -84,6 +84,69 @@
     }));
   }
 
+
+  function installShareAppTab() {
+    const nav = document.querySelector('nav.toolbar[aria-label="Main navigation"]');
+    if (!nav || byId("share-app")) return;
+    const tab = document.createElement("button");
+    tab.type = "button";
+    tab.dataset.tab = "share-app";
+    tab.textContent = "Share App";
+    nav.appendChild(tab);
+
+    const section = document.createElement("section");
+    section.id = "share-app";
+    section.className = "section";
+    section.innerHTML = '<h2>🔗 Share DMC App</h2>' +
+      '<p class="muted">Sangiza inshuti n’abandi bose iyi app ya DMC – Gospel &amp; World History.</p>' +
+      '<div class="card"><h3>App sharing link</h3>' +
+      '<p>Fungura iyi link kugira ngo ubone DMC kuri telefone cyangwa mudasobwa.</p>' +
+      '<input id="dmcShareUrl" type="url" readonly aria-label="DMC app sharing link">' +
+      '<div class="toolbar" style="margin-top:12px">' +
+      '<button class="btn gold" id="dmcNativeShare" type="button">Share App</button>' +
+      '<button class="btn" id="dmcCopyShare" type="button">Copy link</button>' +
+      '<a class="btn" id="dmcOpenShare" href="https://dmc-gospel-world-history.vercel.app/" target="_blank" rel="noopener noreferrer">Open DMC</a>' +
+      '</div><p id="dmcShareStatus" class="muted" role="status" aria-live="polite"></p></div>';
+    document.querySelector("main.wrap").appendChild(section);
+
+    const appUrl = "https://dmc-gospel-world-history.vercel.app/";
+    const urlInput = byId("dmcShareUrl");
+    urlInput.value = appUrl;
+    const status = byId("dmcShareStatus");
+    const copy = async () => {
+      try {
+        if (navigator.clipboard && window.isSecureContext) await navigator.clipboard.writeText(appUrl);
+        else {
+          urlInput.focus(); urlInput.select();
+          if (!document.execCommand("copy")) throw new Error("copy unavailable");
+        }
+        status.textContent = "Link ya DMC yakoporowe. Yisangize abandi.";
+      } catch (_) {
+        urlInput.focus(); urlInput.select();
+        status.textContent = "Hitamo link iri hejuru uyikopiye (Ctrl+C), uyisangize abandi.";
+      }
+    };
+    byId("dmcCopyShare").addEventListener("click", copy);
+    byId("dmcNativeShare").addEventListener("click", async () => {
+      if (navigator.share) {
+        try {
+          await navigator.share({title:"DMC – Gospel & World History",text:"Explore the Bible and world history with DMC.",url:appUrl});
+          status.textContent = "Urakoze gusangiza abandi DMC.";
+        } catch (error) {
+          if (error && error.name !== "AbortError") await copy();
+        }
+      } else await copy();
+    });
+    tab.addEventListener("click", () => {
+      if (typeof window.showTab === "function") window.showTab("share-app");
+      else {
+        document.querySelectorAll(".section").forEach(s => s.classList.toggle("active", s.id === "share-app"));
+        document.querySelectorAll("[data-tab]").forEach(b => b.classList.toggle("active", b === tab));
+        window.scrollTo({top:0,behavior:"smooth"});
+      }
+    });
+  }
+
   function restore() { renderBooks(); renderGospel(); renderWonders(); }
   window.DMCrestoreMissingSections = restore;
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", restore, { once: true });
