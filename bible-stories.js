@@ -184,6 +184,38 @@ function renderPaul(kind){
  paulContent.innerHTML=rows.map(function(r,i){var title=kind==="themes"?(lang==="rw"?"Ingingo y’ingenzi ":"Key teaching ")+(i+1):(lang==="rw"?r[0]:r[1]),body=kind==="themes"?(lang==="rw"?r[0]:r[1]):(lang==="rw"?r[2]:r[3]),ref=kind==="themes"?r[2]:(r[4]||"");return '<article class="story-card" style="margin:10px 0"><h3>'+(kind==="letters"?(i+1)+". ":"")+title+'</h3><p>'+body+'</p>'+(ref?'<p class="muted"><b>'+(lang==="rw"?"Aho dusoma:":"Read:")+'</b> '+ref+'</p>':"")+'</article>'}).join("");
 }
 paulSection.querySelectorAll("[data-paul-tab]").forEach(function(btn){btn.addEventListener("click",function(){renderPaul(btn.dataset.paulTab)})});
-renderPaul("life");
+
+/* Interactive map and cautious travel estimates for Paul's journeys */
+var paulMapBox=document.createElement("section");
+paulMapBox.className="card";paulMapBox.style.marginTop="16px";
+paulMapBox.innerHTML='<h3>🗺️ Ikarita y’ingendo za Pawulo / Map of Paul’s journeys</h3><p class="muted">Hitamo urugendo urebe inzira, ibibanza n’intera igereranyijwe. Iminsi ni igereranya ry’iminsi yo mu rugendo gusa; Bibiliya ntitanga umubare w’iminsi yose yamaze mu ngendo cyangwa mu butumwa. / Select a journey to see its route, places and estimated distance. Travel-day figures are estimates only; Acts does not give a complete day count for each journey.</p><div class="story-actions" id="paulRouteButtons"><button data-route="first">Urugendo 1</button><button data-route="second">Urugendo 2</button><button data-route="third">Urugendo 3</button><button data-route="rome">Ajyanwa i Roma</button></div><div id="paulJourneyMap" style="height:390px;border-radius:12px;margin:12px 0;background:#e8eee8"></div><div id="paulRouteSummary" class="story-detail"></div>';
+paulSection.appendChild(paulMapBox);
+var paulRoutes={
+first:{rw:"Urugendo rwa mbere rw’ubumisiyoneri",en:"First missionary journey",distance:"hafi 2,000–2,400 km",days:"hafi iminsi 70–100 yo kugenda",ref:"Ibyakozwe 13–14",places:[
+["Antiyokiya ya Siriya","Antioch of Syria",36.20,36.16],["Selewukiya","Seleucia",36.12,35.92],["Salamisi, Shipure","Salamis, Cyprus",35.18,33.90],["Pafosi, Shipure","Paphos, Cyprus",34.76,32.41],["Perge","Perga",36.96,30.85],["Antiyokiya ya Pisidiya","Pisidian Antioch",38.30,31.19],["Ikoniyo","Iconium",37.87,32.49],["Lisitira","Lystra",37.58,32.45],["Derube","Derbe",37.37,33.27],["Ataliya","Attalia",36.89,30.70],["Antiyokiya ya Siriya","Antioch of Syria",36.20,36.16]]},
+second:{rw:"Urugendo rwa kabiri rw’ubumisiyoneri",en:"Second missionary journey",distance:"hafi 4,500–5,500 km",days:"hafi iminsi 100–150 yo kugenda",ref:"Ibyakozwe 15:36–18:22",places:[
+["Antiyokiya ya Siriya","Antioch of Syria",36.20,36.16],["Taruso","Tarsus",36.92,34.90],["Derube","Derbe",37.37,33.27],["Lisitira","Lystra",37.58,32.45],["Troasi","Troas",39.75,26.17],["Filipi","Philippi",41.01,24.29],["Tesalonike","Thessalonica",40.64,22.94],["Beroya","Berea",40.52,22.20],["Atenayi","Athens",37.98,23.72],["Korinto","Corinth",37.94,22.93],["Efeso","Ephesus",37.94,27.34],["Kayisariya","Caesarea Maritima",32.50,34.89],["Yerusalemu","Jerusalem",31.78,35.23]]},
+third:{rw:"Urugendo rwa gatatu rw’ubumisiyoneri",en:"Third missionary journey",distance:"hafi 3,500–4,500 km",days:"hafi iminsi 100–140 yo kugenda",ref:"Ibyakozwe 18:23–21:17",places:[
+["Antiyokiya ya Siriya","Antioch of Syria",36.20,36.16],["Galatiya na Firigiya","Galatia and Phrygia (region)",38.00,32.00],["Efeso","Ephesus",37.94,27.34],["Makedoniya","Macedonia (region)",40.50,22.50],["Korinto","Corinth",37.94,22.93],["Filipi","Philippi",41.01,24.29],["Troasi","Troas",39.75,26.17],["Asosi","Assos",39.49,26.34],["Mileto","Miletus",37.53,27.28],["Rodo","Rhodes",36.44,28.22],["Tiro","Tyre",33.27,35.20],["Kayisariya","Caesarea Maritima",32.50,34.89],["Yerusalemu","Jerusalem",31.78,35.23]]},
+rome:{rw:"Urugendo ajyanywe i Roma ari imfungwa",en:"Voyage to Rome as a prisoner",distance:"hafi 2,700–3,200 km",days:"hafi iminsi 25–45 y’urugendo; igice cy’umuyaga gikomeye cyamaze ibyumweru bibiri",ref:"Ibyakozwe 27–28",places:[
+["Yerusalemu","Jerusalem",31.78,35.23],["Kayisariya","Caesarea",32.50,34.89],["Sidoni","Sidon",33.56,35.37],["Mira","Myra",36.26,29.98],["Knido","Cnidus",36.69,27.37],["Kirete","Crete",35.24,24.81],["Malita","Malta",35.90,14.51],["Sirakuza","Syracuse",37.08,15.29],["Rejiyo","Rhegium",38.11,15.65],["Puteyoli","Puteoli",40.82,14.12],["Roma","Rome",41.90,12.50]]}
+};
+var paulLeaflet=null,paulRouteLayer=null,paulMarkers=null;
+function renderPaulRoute(key){
+ var route=paulRoutes[key],rw=lang==="rw",places=route.places;
+ paulRouteBoxSummary.innerHTML='<article class="card"><h3>'+(rw?route.rw:route.en)+'</h3><p><b>'+(rw?"Intera igereranyijwe: ":"Estimated distance: ")+'</b>'+route.distance+'</p><p><b>'+(rw?"Iminsi yo kugenda igereranyijwe: ":"Estimated travel days: ")+'</b>'+route.days+'</p><p><b>'+(rw?"Ibyanditswe: ":"Scripture: ")+'</b>'+route.ref+'</p><p class="muted">'+(rw?"Ibi bipimo ni igereranya ry’inzira zishoboka zishingiye ku bibanza bizwi; inzira nyayo, imihanda ya kera n’ibihe by’urugendo bishobora gutuma intera n’iminsi bihinduka. Iminsi ntibariramo igihe Pawulo yamaze yigisha cyangwa ategereje mu mijyi.":"These are approximate reconstructions of plausible routes between identified places. Ancient roads, sea routes and conditions vary. Travel days exclude time spent preaching or staying in cities.")+'</p><ol>'+places.map(function(p){return "<li>"+(rw?p[0]:p[1])+"</li>"}).join("")+'</ol></article>';
+ if(!window.L){paulMapBox.querySelector("#paulJourneyMap").innerHTML="<p>Map library is unavailable. Check your Internet connection.</p>";return}
+ if(!paulLeaflet){paulLeaflet=L.map("paulJourneyMap").setView([37,29],4);L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{attribution:"&copy; OpenStreetMap contributors",maxZoom:18}).addTo(paulLeaflet);paulRouteLayer=L.layerGroup().addTo(paulLeaflet);paulMarkers=L.layerGroup().addTo(paulLeaflet)}
+ paulRouteLayer.clearLayers();paulMarkers.clearLayers();
+ var latlngs=places.map(function(p){return [p[2],p[3]]});
+ L.polyline(latlngs,{color:"#b88724",weight:4,opacity:.9}).addTo(paulRouteLayer);
+ places.forEach(function(p,i){L.marker([p[2],p[3]]).bindPopup("<b>"+(i+1)+". "+(rw?p[0]:p[1])+"</b><br>"+(rw?route.rw:route.en)).addTo(paulMarkers)});
+ paulLeaflet.fitBounds(L.latLngBounds(latlngs).pad(.15));setTimeout(function(){paulLeaflet.invalidateSize()},150);
+ paulMapBox.querySelectorAll("[data-route]").forEach(function(b){b.classList.toggle("active",b.dataset.route===key)});
+}
+var paulRouteBoxSummary=paulMapBox.querySelector("#paulRouteSummary");
+paulMapBox.querySelectorAll("[data-route]").forEach(function(b){b.onclick=function(){renderPaulRoute(b.dataset.route)}});
+renderPaulRoute("first");
+\nrenderPaul("life");
 
 })();
