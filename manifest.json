@@ -1,0 +1,11 @@
+{
+  "name": "DMC – Gospel & World History",
+  "short_name": "DMC History",
+  "description": "Explore the Bible, world history, timelines, maps and ancient wonders.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f6f4ed",
+  "theme_color": "#123b32",
+  "icons": []
+}
