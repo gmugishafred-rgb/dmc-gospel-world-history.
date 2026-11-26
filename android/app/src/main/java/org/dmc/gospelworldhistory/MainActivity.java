@@ -32,7 +32,7 @@ public class MainActivity extends Activity {
         webView.setWebChromeClient(new WebChromeClient());
         setContentView(webView);
         if (savedInstanceState == null) {
-            webView.loadUrl("https://dmc-gospel-world-history-4kct.vercel.app/");
+            webView.loadUrl("https://dmc-gospel-world-history.vercel.app/");
         } else {
             webView.restoreState(savedInstanceState);
         }
