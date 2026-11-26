@@ -85,6 +85,8 @@
   }
 
   function restore() { renderBooks(); renderGospel(); renderWonders(); }
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded",restore);
+  window.DMCrestoreMissingSections = restore;
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", restore, { once: true });
   else restore();
+  window.addEventListener("pageshow", restore);
 })();
