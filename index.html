@@ -276,7 +276,7 @@ localStorage.setItem('dmcAppLanguage',lang);
 }
 selector.addEventListener('change',()=>apply(selector.value));
 const saved=localStorage.getItem('dmcAppLanguage')||'rw';selector.value=saved;apply(saved);
-const observer=new MutationObserver(()=>{const lang=selector.value;if(lang!=='en')apply(lang)});
+const observer=new MutationObserver(()=>{observer.disconnect();const lang=selector.value;if(lang!=='en')apply(lang);observer.observe(document.querySelector('main'),{childList:true,subtree:true});});
 observer.observe(document.querySelector('main'),{childList:true,subtree:true});
 })();
 
