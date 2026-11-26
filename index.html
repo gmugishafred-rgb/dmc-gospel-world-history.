@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
 :root{--green:#123b32;--gold:#d5a84b;--paper:#f6f4ed;--ink:#202820}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.55 system-ui,Arial}header{background:var(--green);color:white;padding:22px max(18px,calc((100% - 1100px)/2));border-bottom:4px solid var(--gold)}header h1{margin:0;font-size:clamp(23px,4vw,34px)}header p{margin:4px 0 0;color:#e8dfc8}.wrap{max-width:1100px;margin:auto;padding:18px}.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.toolbar button,.btn{border:0;border-radius:9px;padding:10px 14px;background:var(--green);color:white;font-weight:650;cursor:pointer}.toolbar button.active,.btn.gold{background:var(--gold);color:#201a0c}input,select,textarea{width:100%;padding:11px;border:1px solid #c9c7bc;border-radius:8px;font:inherit;background:white}textarea{min-height:120px}.search{display:flex;gap:8px}.search input{flex:1}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(245px,1fr));gap:14px}.card{background:white;border:1px solid #e2dfd4;border-radius:13px;padding:16px;box-shadow:0 2px 8px #1b2b1b0a}.card h3{margin:0 0 6px;color:var(--green)}.chapter-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(38px,1fr));gap:6px;margin-top:12px}.chapter-link{display:block;text-align:center;padding:6px 2px;border:1px solid #ded8c8;border-radius:7px;text-decoration:none;background:#f8f6f0;color:var(--green);font-weight:650}.chapter-link:hover{background:var(--gold);color:#201a0c}.muted{color:#656b61;font-size:.92rem}.tag{display:inline-block;background:#f1e8d2;color:#624916;padding:2px 8px;border-radius:20px;font-size:.78rem}.section{display:none}.section.active{display:block}#map{height:390px;border-radius:12px;z-index:1}.timeline{border-left:3px solid var(--gold);padding-left:18px;margin:14px 0}.timeline article{margin:0 0 18px}.admin{max-width:720px}footer{text-align:center;padding:25px;color:#697068}a{color:#145d4b}button:focus,input:focus,textarea:focus{outline:2px solid var(--gold);outline-offset:2px}.hidden{display:none!important}
-</style>
+ .bible-text{font-family:Georgia,serif;font-size:1.08rem;line-height:1.9}.bible-text p{margin:0 0 12px}.bible-text sup{margin-right:5px}</style>
 </head>
 <body>
 <header><h1>DMC – Gospel & World History</h1><p>Go and make disciples • Explore the story of faith and humanity</p></header>
@@ -20,7 +20,7 @@
 <div class="card"><span class="tag">Welcome</span><h2>Discover the Bible and the history of the world</h2><p>This learning resource connects biblical events, ancient civilizations, historical places and the wider story of humanity. Read, explore maps, search for more information online, and share what you learn.</p><p><b>“Go therefore and make disciples of all nations…”</b> — Matthew 28:19</p><button class="btn gold" onclick="showTab('gospel')">Explore Gospel</button></div>
 <h2>Explore the collection</h2><div id="homeCards" class="grid"></div>
 </section>
-<section id="bible" class="section"><h2>Holy Bible – 66 Books</h2><p class="muted">Browse all 39 books of the Old Testament and 27 books of the New Testament. Choose a book to open its chapters and read the Scripture online. Bible text is provided by the linked Bible service, not stored in this app.</p><div class="toolbar"><button class="active" data-bible-testament="all">All 66</button><button data-bible-testament="old">Old Testament (39)</button><button data-bible-testament="new">New Testament (27)</button></div><div id="bibleBooks" class="grid"></div></section>
+<section id="bible" class="section"><h2>Holy Bible – 66 Books</h2><p class="muted">Browse all 39 books of the Old Testament and 27 books of the New Testament. Choose a book to open its chapters and read the Scripture online. Bible text is provided by the linked Bible service, not stored in this app.</p><div class="toolbar"><button class="active" data-bible-testament="all">All 66</button><button data-bible-testament="old">Old Testament (39)</button><button data-bible-testament="new">New Testament (27)</button></div><div id="bibleBooks" class="grid"></div><div id="bibleReader" class="hidden" style="margin-top:18px"></div></section>
 <section id="mybooks" class="section"><h2>Books by Mugisha Fred Elisha</h2><p class="muted">A personal Christian book collection. The titles below are listed in the library; upload the original PDF manuscripts to make the complete books readable and downloadable here.</p><div id="myBookCards" class="grid"></div></section>
 <section id="gospel" class="section"><h2>Gospel & Biblical History</h2><p class="muted">Introductory study notes with Scripture references. Check the biblical text and reliable historical sources for deeper study.</p><div id="gospelCards" class="grid"></div></section>
 <section id="history" class="section"><h2>World History</h2><p class="muted">A brief introduction to civilizations and historical periods.</p><div id="historyCards" class="grid"></div></section>
@@ -44,10 +44,37 @@ const authorBooks=[
 {title:"Love",description:"A Christian study of love and its meaning, grounded in the teaching of Scripture."},
 {title:"The Calling of God",description:"A Christian work on God's calling and the life of following Him."}
 ];
+let currentBibleBook="Genesis",currentBibleChapter=1;
 function renderBible(filter="all"){
  const list=bibleBooks.filter(b=>filter==="all"||(filter==="old"&&b[2]==="OT")||(filter==="new"&&b[2]==="NT"));
- document.getElementById("bibleBooks").innerHTML=list.map((b)=>'<article class="card"><span class="tag">'+(b[2]==="OT"?"Old Testament":"New Testament")+'</span><h3>'+esc(b[0])+'</h3><p class="muted">'+b[3]+' chapters</p><label for="chapter-'+esc(b[1].replace(/[^a-z0-9]/gi,"-"))+'">Choose chapter</label><select id="chapter-'+esc(b[1].replace(/[^a-z0-9]/gi,"-"))+'" class="bible-chapter">'+Array.from({length:b[3]},(_,i)=>'<option value="'+(i+1)+'">Chapter '+(i+1)+'</option>').join("")+'</select><br><br><button class="btn read-bible" data-book="'+esc(b[1])+'" data-select="chapter-'+esc(b[1].replace(/[^a-z0-9]/gi,"-"))+'">Read chapter</button></article>').join("");
- document.querySelectorAll(".read-bible").forEach(btn=>btn.addEventListener("click",()=>{const chapter=document.getElementById(btn.dataset.select).value;const passage=btn.dataset.book+" "+chapter;window.open("https://www.biblegateway.com/passage/?search="+encodeURIComponent(passage)+"&version=KJV","_blank","noopener,noreferrer")}));
+ document.getElementById("bibleBooks").innerHTML=list.map(b=>'<article class="card"><span class="tag">'+(b[2]==="OT"?"Old Testament":"New Testament")+'</span><h3>'+esc(b[0])+'</h3><p class="muted">'+b[3]+' chapters</p><label for="chapter-'+esc(b[1].replace(/[^a-z0-9]/gi,"-"))+'">Choose chapter</label><select id="chapter-'+esc(b[1].replace(/[^a-z0-9]/gi,"-"))+'" class="bible-chapter">'+Array.from({length:b[3]},(_,i)=>'<option value="'+(i+1)+'">Chapter '+(i+1)+'</option>').join("")+'</select><br><br><button class="btn read-bible" data-book="'+esc(b[1])+'" data-select="chapter-'+esc(b[1].replace(/[^a-z0-9]/gi,"-"))+'">Read in DMC</button></article>').join("");
+ document.querySelectorAll(".read-bible").forEach(btn=>btn.addEventListener("click",()=>{currentBibleBook=btn.dataset.book;currentBibleChapter=Number(document.getElementById(btn.dataset.select).value);loadBibleChapter()}));
+}
+async function loadBibleChapter(){
+ const panel=document.getElementById("bibleReader");
+ panel.classList.remove("hidden");
+ panel.innerHTML='<div class="card"><h3>'+esc(currentBibleBook)+' '+currentBibleChapter+'</h3><p>Loading Scripture…</p></div>';
+ panel.scrollIntoView({behavior:"smooth",block:"start"});
+ try{
+  const url="https://bible-api.com/"+encodeURIComponent(currentBibleBook+" "+currentBibleChapter)+"?translation=kjv";
+  const response=await fetch(url);
+  if(!response.ok)throw new Error("Bible text service unavailable");
+  const data=await response.json();
+  if(!data.verses||!data.verses.length)throw new Error("No verses returned");
+  panel.innerHTML='<div class="card"><div class="toolbar" style="justify-content:space-between"><button class="btn" id="biblePrev">← Previous</button><span class="tag">King James Version (KJV)</span><button class="btn" id="bibleNext">Next →</button></div><h2>'+esc(currentBibleBook)+' '+currentBibleChapter+'</h2><div class="bible-text">'+data.verses.map(v=>'<p><sup class="tag">'+v.verse+'</sup> '+esc(v.text.trim())+'</p>').join("")+'</div><div class="toolbar"><button class="btn" id="biblePrev2">← Previous chapter</button><button class="btn gold" id="bibleNext2">Next chapter →</button></div><p class="muted">King James Version (public domain). Scripture text is displayed inside DMC.</p></div>';
+  ["biblePrev","biblePrev2"].forEach(id=>document.getElementById(id).onclick=()=>changeBibleChapter(-1));
+  ["bibleNext","bibleNext2"].forEach(id=>document.getElementById(id).onclick=()=>changeBibleChapter(1));
+ }catch(error){
+  panel.innerHTML='<div class="card"><h3>Could not load Scripture</h3><p>Check your Internet connection and try again. The Bible reader displays the text inside DMC when the service is reachable.</p><button class="btn" id="retryBible">Try again</button></div>';
+  document.getElementById("retryBible").onclick=loadBibleChapter;
+ }
+}
+function changeBibleChapter(direction){
+ const book=bibleBooks.find(b=>b[1]===currentBibleBook);if(!book)return;
+ currentBibleChapter+=direction;
+ if(currentBibleChapter<1){const i=bibleBooks.findIndex(b=>b[1]===currentBibleBook);if(i>0){currentBibleBook=bibleBooks[i-1][1];currentBibleChapter=bibleBooks[i-1][3]}else currentBibleChapter=1}
+ if(currentBibleChapter>book[3]){const i=bibleBooks.findIndex(b=>b[1]===currentBibleBook);if(i<bibleBooks.length-1){currentBibleBook=bibleBooks[i+1][1];currentBibleChapter=1}else currentBibleChapter=book[3]}
+ loadBibleChapter();
 }
 function renderAuthorBooks(){document.getElementById("myBookCards").innerHTML=authorBooks.map(b=>'<article class="card"><span class="tag">By Mugisha Fred Elisha</span><h3>'+esc(b.title)+'</h3><p>'+esc(b.description)+'</p><p class="muted">The original PDF manuscript has not yet been added to this app.</p></article>').join("")}
 document.querySelectorAll("[data-bible-testament]").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll("[data-bible-testament]").forEach(x=>x.classList.toggle("active",x===b));renderBible(b.dataset.bibleTestament)}));
