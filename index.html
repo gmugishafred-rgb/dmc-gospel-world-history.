@@ -232,8 +232,25 @@ function renderJesusTab(){
  g.innerHTML=jesusGospelData.map(function(x){return '<article class="card"><span class="tag">'+x[2]+' chapters</span><h3>'+esc(x[0])+' / '+esc(x[1])+'</h3><p>'+esc(x[3])+'</p><p><b>Ibice by’ingenzi:</b> '+esc(x[4])+'</p><button class="btn gold" type="button" onclick="showTab(\'bible\')">Soma muri Holy Bible / Read Bible</button></article>'}).join("");
 }
 function render(){renderBible();renderAuthorBooks();renderJesusTab();const data=all();document.getElementById("homeCards").innerHTML=data.slice(0,4).map(card).join("");document.getElementById("gospelCards").innerHTML=data.filter(a=>a.category==="Gospel").map(card).join("")||"No articles yet.";document.getElementById("historyCards").innerHTML=data.filter(a=>a.category==="World History").map(card).join("")||"No articles yet.";document.getElementById("libraryCards").innerHTML=data.map(card).join("");document.getElementById("timelineList").innerHTML=timeline.map(t=>'<article><b>'+esc(t[0])+'</b><div>'+esc(t[1])+'</div></article>').join("")+custom.filter(a=>a.category==="Timeline").map(a=>'<article><b>'+esc(a.title)+'</b><div>'+esc(a.body)+'</div></article>').join("");document.getElementById("wonderCards").innerHTML=wonders.map(w=>'<article class="card wonder-card"><img src="'+w[5]+'" alt="'+esc(w[0])+'" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display=\'none\'"><div class="wonder-copy"><span class="tag">Ancient Wonder</span><h3>'+esc(w[0])+'</h3><p class="muted">'+esc(w[1])+'</p><p>'+esc(w[2])+'</p><p class="wonder-credit">'+esc(w[6])+'</p><button class="btn" onclick="focusPlace('+w[3]+','+w[4]+')">Show on map</button></div></article>').join("");document.getElementById("updateList").innerHTML=custom.filter(a=>a.category==="Updates").map(card).join("")||'<div class="card"><h3>Welcome</h3><p>The DMC learning collection is ready to grow. New articles can be added by the administrator.</p></div>';document.getElementById("adminArticles").innerHTML=custom.map((a,i)=>'<div class="card"><b>'+esc(a.title)+'</b><p class="muted">'+esc(a.category)+'</p><button class="btn" onclick="removeArticle('+i+')">Delete</button></div>').join("")}
-function showTab(id){document.querySelectorAll(".section").forEach(s=>s.classList.toggle("active",s.id===id));document.querySelectorAll("[data-tab]").forEach(b=>b.classList.toggle("active",b.dataset.tab===id));if(id==="maps"&&!window.dmcMap)initMap();if(id==="bible-explorer"&&!window.dmcBibleExplorerMap)initBibleExplorer();window.scrollTo({top:0,behavior:"smooth"})}
-document.querySelectorAll("[data-tab]").forEach(b=>b.addEventListener("click",()=>showTab(b.dataset.tab)));
+function showTab(id){
+ const target=document.getElementById(id);
+ if(!target||!target.classList.contains("section"))return false;
+ document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+ target.classList.add("active");
+ document.querySelectorAll("[data-tab]").forEach(b=>b.classList.toggle("active",b.dataset.tab===id));
+ if(id==="maps"){if(typeof initMap==="function")initMap();setTimeout(()=>{if(window.dmcMap&&window.dmcMap.invalidateSize)window.dmcMap.invalidateSize();},150);}
+ if(id==="bible-explorer"){if(typeof initBibleExplorer==="function")initBibleExplorer();setTimeout(()=>{if(window.explorerMap&&window.explorerMap.invalidateSize)window.explorerMap.invalidateSize();},150);}
+ try{history.replaceState(null,"","#"+id);}catch(e){}
+ window.scrollTo({top:0,behavior:"smooth"});
+ return true;
+}
+document.addEventListener("click",function(event){
+ const btn=event.target.closest("[data-tab]");
+ if(!btn)return;
+ event.preventDefault();
+ showTab(btn.dataset.tab);
+});
+window.showTab=showTab;
 document.getElementById("articleForm").addEventListener("submit",e=>{e.preventDefault();custom.push({title:title.value.trim(),category:category.value,refs:refs.value.trim(),body:body.value.trim()});localStorage.setItem("dmcArticles",JSON.stringify(custom));e.target.reset();adminStatus.textContent="Saved on this device.";render()});
 function removeArticle(i){if(confirm("Delete this article from this device?")){custom.splice(i,1);localStorage.setItem("dmcArticles",JSON.stringify(custom));render()}}
 document.getElementById("searchBtn").onclick=()=>{
